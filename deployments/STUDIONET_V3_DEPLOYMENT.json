@@ -1,0 +1,22 @@
+{
+  "network": "Studionet",
+  "chain_id": 61999,
+  "source_sha256": "7e9fdc817cb6ebea917934367a3b60ea0e0dc3ddccc6555c189950597edb78a4",
+  "signer": "0x76c89fE14222650654883B4B5E2003EaD6df4D67",
+  "attempted": "2026-10-16T14:09:06.837Z",
+  "tx": "0x27f9d1d1d861ff3c5a76ace8e308d060461daecde29d794c81a305d9bec497ad",
+  "address": "0x112c9B26daf6168c44e325231061c1c9Db0dad01",
+  "finalized": true,
+  "execution_result": "SUCCESS",
+  "validator_votes": {
+    "0x3E5ee2507cc167C9925Bf10c67D7986581112024": "agree",
+    "0x4404Fb70d490c935758146f42A73DC850FF95C71": "agree",
+    "0x9ea87b28DcA2F79fe108CF06a4c13B4c876AC23d": "agree",
+    "0xcE1d6bBB36B744536153966B4DD42276f5ADd0F8": "agree",
+    "0xec2Fb79cd12255Eb34886CEd7332f27B98DEe658": "agree"
+  },
+  "receipt_summary": {
+    "status": 7,
+    "execution_result": "SUCCESS"
+  }
+}

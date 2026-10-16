@@ -1,52 +1,36 @@
-# EventSure v2 — Intelligent Attestation Protocol
+# EventSure — Public Evidence Verification on GenLayer
 
-**Production:** https://eventsure-studionet.vercel.app
-**Contract:** https://explorer-studio.genlayer.com/address/0x5386AbB113Fb21868982a0d382E6abA6244DE617
+EventSure is a **contract-first, reusable Intelligent Contract and companion dApp**. The canonical V3.1 release directly retrieves frozen public evidence, asks GenLayer validators to independently evaluate a bounded semantic decision, allows objections, and finalizes only after a review window. Its frontend provides a dedicated public landing page and wallet-connected verification console.
 
-EventSure allows any account to register a milestone, freeze its conditions, and designate an attestor who can commit timestamped immutable evidence. An independent GenLayer validator set evaluates the attestor's claim against frozen rules. A positive verdict **does not independently prove that an off-chain event occurred**.
+Website: https://eventsure-studionet.vercel.app
+GitHub: https://github.com/GIFTEDLOV/eventsure
+Canonical Studionet contract: 0x13Bc702936d8d7Bd5880d4A16119690149D3D4c7
+Chain ID: 61999
+RPC: https://studio.genlayer.com/api
+Canonical source SHA256: 0fe025b631642094a3f86d49b6d928ba76a00c1af1102a2699036fb959a97acb
 
-## Frozen release
+## Protocol
 
-- Network: Studionet, chain 61999; RPC https://studio.genlayer.com/api
-- Deployed contract: 0x5386AbB113Fb21868982a0d382E6abA6244DE617
-- SHA-256: 1840b0ff3cbb5b243052c5e52d1dda871f52570968eb3dd065351733f99a5c14
-- ABI: 10 public methods (4 writes, 6 reads)
-- GenVM: v0.6.0-rc6, pinned py-genlayer digest 1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6
-- Frontend SDK: genlayer-js 1.1.8
-- Final canonical evidence: deployments/STUDIONET_V2_PROOF.json
+CREATE → FREEZE → optional ATTEST → RESOLVE (contract-side public web retrieval + GenLayer validator consensus) → PRELIMINARY → optional CHALLENGE and RECONSIDER → FINALIZE (24-hour review period).
 
-## Workflow
+Anyone may create a case with distinct public evidence sources, a frozen question, deadline, verification rule, and optional attestors (up to 5, configurable quorum). No operator controls an admin key. The contract, not the frontend, retrieves web evidence and performs judgment. Two or more sources must substantiate the claim and its timing for VERIFIED. Failure or insufficient evidence must not be represented as verified truth.
 
-1. Connect a compatible EIP-1193 wallet to Studionet.
-2. Create a milestone with a unique identifier, title, immutable requirement and rule, deadline, and attestor.
-3. The event creator freezes the conditions before the deadline.
-4. The attestor commits one evidence record, signed on-chain before expiry.
-5. Any signer can request consensus resolution after evidence is recorded.
-6. Inspect the final verdict, original evidence SHA-256, and append-only audit.
+V2 was a weaker attestation-only prototype. V3 introduced web retrieval but failed the first live resolution due to an SDK Response.status_code mismatch. V3.1 fixes this issue; each release has a separate deployed contract and immutable source hash.
 
-Browser-wallet write paths are implemented, but end-to-end signing by every third-party wallet is **not** independently qualified. Canonical blockchain qualification used a test-only GenLayerJS signer.
+## Develop
 
-## Reproduce
+- Python 3.12+, Node.js 24.x.
+- Python tests: python -m unittest discover -s tests -v
+- GenVM validation: GENVM_VERSION=v0.6.0-rc6 genvm-lint check contracts/EventSureV3_1.py
+- Frontend: cd web && npm ci && npm test && npm run build
+- Public routes: /, /app, /api/v3/state, /api/v3/source
+- Provenance: node scripts/verify_v3_1.mjs (root dependencies installed)
 
-Node.js 24 and Python 3.12+.
+Refer to docs/EVENTSURE_V3_AUDIT.md and docs/PROJECT_TRACK_V3_1.md.
 
-- Tests: `npm test` (35 Python contract/security tests and 17 frontend tests)
-- Frontend: `npm --prefix web ci`, `npm --prefix web audit --audit-level=high`, `npm --prefix web run build`
-- GenVM (PowerShell): `$env:GENVM_VERSION = "v0.6.0-rc6"`, then `genvm-lint check contracts/EventSureV2.py`
-- Manifest and secret checks: `node scripts/check_manifest.mjs` and `python scripts/secret_audit.py`
-- Read-only chain verification: `npm run verify`
+## Cautions
 
-For a full local release check, use [docs/TESTING.md](docs/TESTING.md). Network, ABI, finalized transaction, execution, and canonical event provenance are recorded in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+This is testnet research infrastructure. Website diversity is not the same as independent ownership of publications. Public documents can be unavailable or misleading; LLM and validators can disagree. The first challenge can monopolize a case's challenge window. No escrow or payout integration is provided. Any unqualified live resolution must be recorded as such. Do not submit private information as public on-chain evidence. Wallet support requires end-to-end checks with each provider.
 
-The GitHub Actions workflow performs Python tests and compilation, manifest parity, secret scanning across reachable Git history, root and frontend dependency audits, frontend tests and production build, GenVM lint/schema/validation and SDK-aware Pyright typechecking, and read-only Studionet verification.
-
-## Provenance and limitations
-
-This is the **cloud-reconstructed version**. It is not byte-identical to the original Windows EventSure V1 source (historical SHA-256 a53f7db43dd44b894a5e48b720ddf748e369c0fc3bc58d3b3a66f8dde8f7ea75). V1 source and deployment history are not used as V2 release provenance.
-
-The first exploratory V2 qualification mistakenly attested nine public ABI methods; the deployed V2 ABI has ten. That historical attempt remains on-chain but is excluded from canonical qualification. The final V2 case correctly identifies ten methods, verified against the chain before submitting evidence.
-
-The production interface keeps that exploratory record visible as historical chain data and labels it as excluded. The canonical release case is `EVS-HARDENED-V2-FINAL-20261016`.
-
-No frontend wallet secret or test signer private key belongs in the repository. See [docs/SECURITY.md](docs/SECURITY.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/ATTRIBUTION.md](docs/ATTRIBUTION.md), and [docs/SUBMISSION.md](docs/SUBMISSION.md).
+Conceptual inspiration: GenLayer Labs Intelligent Oracle (MIT), https://github.com/genlayerlabs/intelligent-oracle.
 

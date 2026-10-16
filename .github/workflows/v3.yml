@@ -1,0 +1,62 @@
+name: EventSure V3.1 Release
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - release/eventsure-v3.1
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m compileall -q contracts tests
+      - run: python -m unittest discover -s tests -v
+      - run: python -c "import hashlib,pathlib; assert hashlib.sha256(pathlib.Path('contracts/EventSureV3_1.py').read_bytes()).hexdigest()=='0fe025b631642094a3f86d49b6d928ba76a00c1af1102a2699036fb959a97acb'"
+  genvm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install 'genvm-linter==0.11.1rc2'
+      - name: Independent GenVM lint and semantic typecheck
+        env:
+          GENVM_VERSION: v0.6.0-rc6
+        run: genvm-lint check contracts/EventSureV3_1.py
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm audit --audit-level=high
+      - run: npm run build
+  provenance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - name: Frozen deployed-source and live consensus proof
+        run: node scripts/verify_v3_1.mjs
+
