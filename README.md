@@ -30,18 +30,23 @@ Browser-wallet write paths are implemented, but end-to-end signing by every thir
 
 Node.js 24 and Python 3.12+.
 
-- Python: python -m unittest discover -s tests -v
-- GenVM: GENVM_VERSION=v0.6.0-rc6 genvm-lint check contracts/EventSureV2.py
-- Frontend: cd web && npm ci && npm test && npm run build
-- Chain parity: node scripts/verify_studionet.mjs (after installing genlayer-js 1.1.8 for the root script)
+- Tests: `npm test` (35 Python contract/security tests and 17 frontend tests)
+- Frontend: `npm --prefix web ci`, `npm --prefix web audit --audit-level=high`, `npm --prefix web run build`
+- GenVM (PowerShell): `$env:GENVM_VERSION = "v0.6.0-rc6"`, then `genvm-lint check contracts/EventSureV2.py`
+- Manifest and secret checks: `node scripts/check_manifest.mjs` and `python scripts/secret_audit.py`
+- Read-only chain verification: `npm run verify`
 
-The GitHub Actions workflow performs Python unit tests, source parity, frontend tests, npm audit, production build, and GenVM checks.
+For a full local release check, use [docs/TESTING.md](docs/TESTING.md). Network, ABI, finalized transaction, execution, and canonical event provenance are recorded in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
+The GitHub Actions workflow performs Python tests and compilation, manifest parity, secret scanning across reachable Git history, root and frontend dependency audits, frontend tests and production build, GenVM lint/schema/validation and SDK-aware Pyright typechecking, and read-only Studionet verification.
 
 ## Provenance and limitations
 
-This is the **cloud-reconstructed version**. It is not byte-identical to the original, unavailable Windows EventSure source (historical SHA-256 a53f7db43dd44b894a5e48b720ddf748e369c0fc3bc58d3b3a66f8dde8f7ea75). Recovered V1 was deployed separately as evidence, while V2 is the canonical hardened release.
+This is the **cloud-reconstructed version**. It is not byte-identical to the original Windows EventSure V1 source (historical SHA-256 a53f7db43dd44b894a5e48b720ddf748e369c0fc3bc58d3b3a66f8dde8f7ea75). V1 source and deployment history are not used as V2 release provenance.
 
 The first exploratory V2 qualification mistakenly attested nine public ABI methods; the deployed V2 ABI has ten. That historical attempt remains on-chain but is excluded from canonical qualification. The final V2 case correctly identifies ten methods, verified against the chain before submitting evidence.
 
-No frontend wallet secret or test signer private key belongs in the repository. See docs/SECURITY.md, docs/ARCHITECTURE.md, and docs/ATTRIBUTION.md.
+The production interface keeps that exploratory record visible as historical chain data and labels it as excluded. The canonical release case is `EVS-HARDENED-V2-FINAL-20261016`.
+
+No frontend wallet secret or test signer private key belongs in the repository. See [docs/SECURITY.md](docs/SECURITY.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/ATTRIBUTION.md](docs/ATTRIBUTION.md), and [docs/SUBMISSION.md](docs/SUBMISSION.md).
 

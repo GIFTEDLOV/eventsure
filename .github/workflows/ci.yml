@@ -1,28 +1,47 @@
-name: EventSure CI
+name: EventSure Release CI
+
 on: [push, pull_request, workflow_dispatch]
+
 permissions:
   contents: read
+
 jobs:
   contracts:
+    name: Contract tests and source parity
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
       - run: python -m compileall -q contracts tests
       - run: python -m unittest discover -s tests -v
-      - name: Source hash parity
-        run: |
-          python - <<'PY'
-          import json,hashlib,pathlib
-          p=json.load(open('deployments/STUDIONET_V2_PROOF.json'))
-          code=pathlib.Path(p['source_path']).read_bytes()
-          assert hashlib.sha256(code).hexdigest()==p['source_sha256']
-          assert len(code)==p['source_bytes']
-          print('SOURCE_INTEGRITY=PASS')
-          PY
+      - run: node scripts/check_manifest.mjs
+
+  security:
+    name: Dependency and secret audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: python scripts/secret_audit.py
+      - run: npm ci
+      - run: npm audit --audit-level=high
+      - run: npm --prefix web ci
+      - run: npm --prefix web audit --audit-level=high
+
   frontend:
+    name: Frontend tests, audit and build
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -31,23 +50,45 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: "24"
           cache: npm
           cache-dependency-path: web/package-lock.json
       - run: npm ci
       - run: npm test
       - run: npm audit --audit-level=high
       - run: npm run build
+
   genvm:
+    name: GenVM lint and semantic validation
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-      - run: python -m pip install 'genvm-linter==0.11.1rc2'
-      - name: GenVM semantic validation
+          python-version: "3.12"
+      - run: python -m pip install "genvm-linter==0.11.1rc2"
+      - name: GenVM lint and pinned-runner validation
         env:
           GENVM_VERSION: v0.6.0-rc6
         run: genvm-lint check contracts/EventSureV2.py
+      - name: ABI schema extraction
+        env:
+          GENVM_VERSION: v0.6.0-rc6
+        run: genvm-lint schema contracts/EventSureV2.py
+      - name: GenVM SDK Pyright typecheck
+        env:
+          GENVM_VERSION: v0.6.0-rc6
+        run: genvm-lint typecheck contracts/EventSureV2.py
 
+  integration:
+    name: Read-only Studionet provenance verification
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: npm ci
+      - run: node scripts/check_manifest.mjs
+      - run: node scripts/verify_studionet.mjs

@@ -10,9 +10,9 @@ Source: https://eventsure-studionet.vercel.app/api/source.
 
 Explicit trust disclaimer: this verdict evaluates an attestor assertion; it is not independent confirmation that an external event happened.
 
-CI release checks: Python unit/adversarial 35 passing, frontend 17 passing, GenVM lint and validation PASS, compiled frontend PASS, online code hash/source parity PASS, npm audit 0.
+Local release checks: 35 Python contract/security tests and 17 frontend tests passed; GenVM lint, semantic validation, schema, and typecheck passed; frontend build passed; manifest/source parity passed; npm audits reported zero vulnerabilities; read-only Studionet verification confirmed the canonical source, ABI, event, audit, and five finalized transactions. See [TESTING.md](TESTING.md) for the actual local commands and results.
 
-Submission not performed here. GitHub remote creation / branch protection / CI run status cannot be claimed until publication and actual checks. Provider-wallet browser signing compatibility remains unverified.
+GitHub publication, exact-main CI, branch protection, and GenLayer Portal submission are pending verification. Do not report these stages as complete until their platform APIs and dashboards confirm them. Provider-wallet browser signing compatibility remains unverified.
 
 Upstream attribution: https://github.com/genlayerlabs/intelligent-oracle (MIT, conceptual inspiration, no copied source).
 

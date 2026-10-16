@@ -40,5 +40,5 @@ MEDIUM: RPC HTML returned during receipt polling -> journal-based transaction re
 
 ## Secret handling
 
-Never commit wallets, secrets, private keys, .env files, seed phrases, or recovered snapshot content. Public code and CI never require or embed a private key. No mainnet operations are permitted by this repository's scripts.
+Never commit wallets, secrets, private keys, .env files, seed phrases, or recovered snapshot content. Public code and CI never require or embed a private key. The CI secret audit scans the working tree and reachable Git blobs for common token/key patterns and unexpected environment files; it is a useful check, not a general-purpose data-loss-prevention guarantee. No mainnet operations are permitted by this repository's scripts.
 

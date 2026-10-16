@@ -13,4 +13,5 @@ __pycache__/
 coverage/
 *.log
 .DS_Store
+deployments/pending-private-deployment.json
 

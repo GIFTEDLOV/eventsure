@@ -4,6 +4,7 @@ export const RPC="https://studio.genlayer.com/api";
 export const CONTRACT="0x5386AbB113Fb21868982a0d382E6abA6244DE617";
 export const SOURCE_SHA256="1840b0ff3cbb5b243052c5e52d1dda871f52570968eb3dd065351733f99a5c14";
 export const CANONICAL_EVENT="EVS-HARDENED-V2-FINAL-20261016";
+export const HISTORICAL_EXPLORATORY_EVENT="EVS-HARDENED-V2-20261016";
 export const TX={
 deploy:"0xededdcf9eb528cb298111fddbde7923abfd2e315de29e4b1addf5c41b3ec365a",
 create:"0xcbd1da087c8046a79fa08357929e539e5b5af11355d3d292bc1e32cf8c9f0b2d",

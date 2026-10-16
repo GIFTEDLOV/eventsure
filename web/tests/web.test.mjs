@@ -1,9 +1,9 @@
 import {test} from "node:test";
 import assert from "node:assert/strict";
-import {validNewEvent,validEvidence,canFreeze,canAttest,canResolve,bytes,CHAIN_ID,CONTRACT} from "../lib/protocol.mjs";
+import {validNewEvent,validEvidence,canFreeze,canAttest,canResolve,bytes,CHAIN_ID,CONTRACT,CANONICAL_EVENT,HISTORICAL_EXPLORATORY_EVENT} from "../lib/protocol.mjs";
 const alice="0x"+"a".repeat(40),bob="0x"+"b".repeat(40);
 const payload={id:"EVENT-001",title:"Hardened release",requirement:"Verify signed evidence.",rule:"Require a valid attestation.",deadline:"2099-01-01T00:00:00Z",attestor:bob};
-test("canonical Studionet chain",()=>{assert.equal(CHAIN_ID,61999);assert.match(CONTRACT,/^0x[a-fA-F0-9]{40}$/)});
+test("canonical Studionet release and excluded exploratory case",()=>{assert.equal(CHAIN_ID,61999);assert.match(CONTRACT,/^0x[a-fA-F0-9]{40}$/);assert.equal(CANONICAL_EVENT,"EVS-HARDENED-V2-FINAL-20261016");assert.equal(HISTORICAL_EXPLORATORY_EVENT,"EVS-HARDENED-V2-20261016")});
 test("valid event",()=>assert.equal(validNewEvent(payload),true));
 test("reject invalid ids",()=>{for(const id of ["","bad space","á","<x>","X".repeat(81)])assert.throws(()=>validNewEvent({...payload,id}))});
 test("reject malformed attestors",()=>{for(const attestor of ["0x0","0x"+"0".repeat(40),"alice","0x"+"z".repeat(40)])assert.throws(()=>validNewEvent({...payload,attestor}))});
