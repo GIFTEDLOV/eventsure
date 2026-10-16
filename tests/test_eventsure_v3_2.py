@@ -189,6 +189,7 @@ class Security(unittest.TestCase):
     def test_49_post_challenge_finalize(self):
         register(self.x);freeze(self.x);conclude(self.x)
         self.x.challenge_case("CHECK-123","A"*40,"")
+        clock("2026-10-18T15:03:00Z")
         self.x.reconsider_case("CHECK-123")
         clock("2026-10-20T15:03:00Z")
         self.x.finalize_case("CHECK-123")
