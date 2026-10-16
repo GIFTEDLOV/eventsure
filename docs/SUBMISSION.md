@@ -12,7 +12,11 @@ Explicit trust disclaimer: this verdict evaluates an attestor assertion; it is n
 
 Local release checks: 35 Python contract/security tests and 17 frontend tests passed; GenVM lint, semantic validation, schema, and typecheck passed; frontend build passed; manifest/source parity passed; npm audits reported zero vulnerabilities; read-only Studionet verification confirmed the canonical source, ABI, event, audit, and five finalized transactions. See [TESTING.md](TESTING.md) for the actual local commands and results.
 
-GitHub publication, exact-main CI, branch protection, and GenLayer Portal submission are pending verification. Do not report these stages as complete until their platform APIs and dashboards confirm them. Provider-wallet browser signing compatibility remains unverified.
+Public source repository: https://github.com/GIFTEDLOV/eventsure (default branch `main`; original `v2.0.0` tag retained). The repository's [release CI runs](https://github.com/GIFTEDLOV/eventsure/actions) and branch rules are the authoritative publication evidence; check the run for the current exact `main` SHA.
+
+The production application is https://eventsure-studionet.vercel.app. Vercel project `eventsure-studionet` is linked to this repository and builds from `web/`.
+
+GenLayer Portal submission: **not submitted**. No submission ID or acceptance is claimed. The authenticated Builder workflow could not be opened in this execution because no browser surface was available. Submit through the authenticated Portal dashboard when that session is available. Provider-wallet browser signing compatibility remains unverified.
 
 Upstream attribution: https://github.com/genlayerlabs/intelligent-oracle (MIT, conceptual inspiration, no copied source).
 
