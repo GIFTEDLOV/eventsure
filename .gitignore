@@ -7,6 +7,7 @@
 *.seed
 node_modules/
 .next/
+.vercel/
 __pycache__/
 *.pyc
 .pytest_cache/
@@ -15,3 +16,5 @@ coverage/
 .DS_Store
 deployments/pending-private-deployment.json
 
+
+.vercel
