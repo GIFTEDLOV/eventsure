@@ -1,0 +1,23 @@
+import {test} from "node:test";
+import assert from "node:assert/strict";
+import {validNewEvent,validEvidence,canFreeze,canAttest,canResolve,bytes,CHAIN_ID,CONTRACT} from "../lib/protocol.mjs";
+const alice="0x"+"a".repeat(40),bob="0x"+"b".repeat(40);
+const payload={id:"EVENT-001",title:"Hardened release",requirement:"Verify signed evidence.",rule:"Require a valid attestation.",deadline:"2099-01-01T00:00:00Z",attestor:bob};
+test("canonical Studionet chain",()=>{assert.equal(CHAIN_ID,61999);assert.match(CONTRACT,/^0x[a-fA-F0-9]{40}$/)});
+test("valid event",()=>assert.equal(validNewEvent(payload),true));
+test("reject invalid ids",()=>{for(const id of ["","bad space","á","<x>","X".repeat(81)])assert.throws(()=>validNewEvent({...payload,id}))});
+test("reject malformed attestors",()=>{for(const attestor of ["0x0","0x"+"0".repeat(40),"alice","0x"+"z".repeat(40)])assert.throws(()=>validNewEvent({...payload,attestor}))});
+test("reject invalid deadlines",()=>{assert.throws(()=>validNewEvent({...payload,deadline:"2020-01-01T00:00:00Z"}));assert.throws(()=>validNewEvent({...payload,deadline:"lol"}))});
+test("require enough description",()=>assert.throws(()=>validNewEvent({...payload,requirement:"small"})));
+test("UTF-8 byte length",()=>{assert.equal(bytes("é"),2);assert.equal(bytes("🔥"),4)});
+test("reject short evidence",()=>assert.throws(()=>validEvidence("a".repeat(31),"")));
+test("reject oversized evidence",()=>assert.throws(()=>validEvidence("a".repeat(12001),"")));
+test("valid evidence",()=>assert.equal(validEvidence("a".repeat(32),"reference"),true));
+test("creator may freeze",()=>assert.equal(canFreeze({status:"DRAFT",deadline:payload.deadline,creator:alice},alice),true));
+test("wrong creator cannot freeze",()=>assert.equal(canFreeze({status:"DRAFT",deadline:payload.deadline,creator:alice},bob),false));
+test("attestor can submit once",()=>assert.equal(canAttest({status:"FROZEN",deadline:payload.deadline,attestor:bob},bob,false),true));
+test("wrong attestor cannot submit",()=>assert.equal(canAttest({status:"FROZEN",deadline:payload.deadline,attestor:bob},alice,false),false));
+test("double submission disallowed",()=>assert.equal(canAttest({status:"FROZEN",deadline:payload.deadline,attestor:bob},bob,true),false));
+test("resolve needs evidence",()=>{assert.equal(canResolve({status:"FROZEN"},false),false);assert.equal(canResolve({status:"FROZEN"},true),true)});
+test("cannot resolve twice",()=>assert.equal(canResolve({status:"RESOLVED"},true),false));
+

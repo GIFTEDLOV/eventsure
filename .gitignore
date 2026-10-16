@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+.eventsure-studionet-key
+*.privatekey
+*secret*key*
+*.seed
+node_modules/
+.next/
+__pycache__/
+*.pyc
+.pytest_cache/
+coverage/
+*.log
+.DS_Store
+

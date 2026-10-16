@@ -1,0 +1,24 @@
+{
+  "project": "EventSure v2",
+  "network": "studionet",
+  "rpc": "https://studio.genlayer.com/api",
+  "chain_id": 61999,
+  "contract_address": "0x5386AbB113Fb21868982a0d382E6abA6244DE617",
+  "source_path": "contracts/EventSureV2.py",
+  "source_sha256": "1840b0ff3cbb5b243052c5e52d1dda871f52570968eb3dd065351733f99a5c14",
+  "source_bytes": 9914,
+  "abi_method_count": 10,
+  "event_id": "EVS-HARDENED-V2-FINAL-20261016",
+  "evidence_sha256": "18387b3a1f87e73df5336f06d0897c538b0aa88404606300f1b006c4091ed3fd",
+  "transactions": {
+    "deploy": "0xededdcf9eb528cb298111fddbde7923abfd2e315de29e4b1addf5c41b3ec365a",
+    "create": "0xcbd1da087c8046a79fa08357929e539e5b5af11355d3d292bc1e32cf8c9f0b2d",
+    "freeze": "0xd25ce16e08af67c9472d21f4e45751c069a587b66e17b5868c6174d4c07e4c09",
+    "attest": "0x0c2b3e19d2d1c948751990be907807d929475e4662c143dc4df43795cab2fb21",
+    "resolve": "0xc20a0e4b03a74e3e7aa1b4862f7a744e460fe1fe142d349420953bd2b0a36650"
+  },
+  "recorded_verdict": "ATTESTATION_SUPPORTED",
+  "canonical_release_case": true,
+  "trust_model": "authenticated attestor assertion; validator semantic agreement; no independent external fact verification",
+  "source_origin": "cloud reconstruction, not Windows EventSure initial source"
+}

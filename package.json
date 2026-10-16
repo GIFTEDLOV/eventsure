@@ -1,0 +1,1 @@
+{"name":"eventsure-monorepo","version":"2.0.0","private":true,"type":"module","scripts":{"verify":"node scripts/verify_studionet.mjs","parity":"node scripts/check_manifest.mjs","test":"python3 -m unittest discover -s tests -q && npm --prefix web test","build":"npm --prefix web run build"},"dependencies":{"genlayer-js":"1.1.8"}}
