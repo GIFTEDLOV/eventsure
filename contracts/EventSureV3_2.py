@@ -210,8 +210,8 @@ class EventSureV3_2(gl.Contract):
                 if item["reference"]:
                     response = gl.nondet.web.get(item["reference"])
                     if len(response.body) > 500000:
-                    raise gl.vm.UserError("Oversized evidence source")
-                body = response.body.decode("utf-8", errors="replace")
+                        raise gl.vm.UserError("Oversized evidence source")
+                    body = response.body.decode("utf-8", errors="replace")
                     if not body.strip():
                         raise gl.vm.UserError("Challenge source unavailable")
                     excerpt = body[:4500]
