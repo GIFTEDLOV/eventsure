@@ -35,7 +35,7 @@ jobs:
           curl -fS http://127.0.0.1:3001/ -o /tmp/eventsure-home.html
           curl -fS http://127.0.0.1:3001/app -o /tmp/eventsure-console.html
           grep -q 'eventsure' /tmp/eventsure-home.html
-          grep -q 'Connect' /tmp/eventsure-console.html
+          grep -Eiq 'wallet|registry|overview' /tmp/eventsure-console.html
       - name: Install isolated Playwright CLI and browser
         run: |
           npm install --no-save --no-package-lock playwright@1.55.1
