@@ -259,5 +259,24 @@ class Security(unittest.TestCase):
         self.assertEqual(len(a["source_digests"]),2)
         self.assertTrue(all(len(x)==64 for x in a["source_digests"]))
 
+
+    def test_61_www_same_publisher_not_independent(self):
+        urls=["https://example.com/evidence/page","https://www.example.com/reports/one"]
+        self.fail(register,self.x,urls)
+    def test_62_related_subdomains_not_independent(self):
+        urls=["https://api.example.com/evidence/page","https://docs.example.com/reports/one"]
+        self.fail(register,self.x,urls)
+    def test_63_multi_level_public_suffix_held_distinct(self):
+        urls=["https://authority.gov.uk/reports/date","https://another.gov.uk/reports/date"]
+        register(self.x,urls)
+        self.assertEqual(len(self.x.get_case("CHECK-123")["sources"]),2)
+    def test_64_oversized_remote_body_rejected(self):
+        register(self.x);freeze(self.x)
+        gl.nondet.web.get=lambda u:types.SimpleNamespace(body=b"A"*500001)
+        self.fail(conclude,self.x)
+    def test_65_control_character_url_rejected(self):
+        urls=["https://api.github.com/repos/a/b\n","https://docs.genlayer.com/developers/test"]
+        self.fail(register,self.x,urls)
+
 if __name__=="__main__":unittest.main()
 

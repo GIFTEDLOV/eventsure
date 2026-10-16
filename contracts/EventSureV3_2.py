@@ -39,6 +39,8 @@ def sender() -> str:
 def public_source(value: str) -> str:
     if not isinstance(value, str) or not 12 <= len(value) <= 300:
         raise gl.vm.UserError("Invalid evidence URL length")
+    if any(ord(c) < 33 or ord(c) > 126 for c in value):
+        raise gl.vm.UserError("Invalid control or non-ASCII character in URL")
     p = urlsplit(value)
     host = (p.hostname or "").lower()
     if p.scheme != "https" or p.username or p.password or p.port or p.fragment:
@@ -53,7 +55,12 @@ def public_source(value: str) -> str:
         raise gl.vm.UserError("Use a specific evidence document URL")
     if host == "github.com" or host.endswith(".github.com") or host == "githubusercontent.com" or host.endswith(".githubusercontent.com"):
         return "github"
-    return host
+    labels = host.removeprefix("www.").split(".")
+    suffix = ".".join(labels[-2:])
+    multipart = {"co.uk", "org.uk", "gov.uk", "com.au", "com.ng",
+                 "co.za", "com.br", "co.jp", "co.in", "com.mx"}
+    size = 3 if suffix in multipart and len(labels) >= 3 else 2
+    return ".".join(labels[-size:])
 
 
 def model_vote(raw) -> dict:
@@ -191,6 +198,8 @@ class EventSureV3_2(gl.Contract):
             challenge_digests = []
             for url in c["sources"]:
                 response = gl.nondet.web.get(url)
+                if len(response.body) > 500000:
+                    raise gl.vm.UserError("Oversized evidence source")
                 body = response.body.decode("utf-8", errors="replace")
                 if not body.strip():
                     raise gl.vm.UserError("Empty public evidence source")
@@ -200,7 +209,9 @@ class EventSureV3_2(gl.Contract):
             for item in objections:
                 if item["reference"]:
                     response = gl.nondet.web.get(item["reference"])
-                    body = response.body.decode("utf-8", errors="replace")
+                    if len(response.body) > 500000:
+                    raise gl.vm.UserError("Oversized evidence source")
+                body = response.body.decode("utf-8", errors="replace")
                     if not body.strip():
                         raise gl.vm.UserError("Challenge source unavailable")
                     excerpt = body[:4500]
