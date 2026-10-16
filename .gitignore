@@ -15,6 +15,3 @@ coverage/
 *.log
 .DS_Store
 deployments/pending-private-deployment.json
-
-
-.vercel
