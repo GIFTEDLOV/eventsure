@@ -23,7 +23,7 @@ export default function Landing(){
  <main>
  <section className="es-hero"><div className="es-grid-bg"/>
   <div className="es-hero-copy">
-   <div className="es-strap"><span className="es-live-dot"/> GENLAYER INTELLIGENT CONTRACT <span className="es-strap-tail">STUDIONET / V3.2</span></div>
+   <div className="es-strap"><span className="es-live-dot"/> GENLAYER INTELLIGENT CONTRACT <span className="es-strap-tail">STUDIONET / V3.3</span></div>
    <h1>Truth needs<br/><em>a higher standard.</em></h1>
    <p className="es-lede">The evidence-first verification layer for promises, milestones and public-world outcomes. Frozen rules. Independent sources. On-chain consensus.</p>
    <div className="es-hero-actions"><Link href="/app" className="es-primary">Explore the protocol <Arrow/></Link><a href="#protocol" className="es-secondary">How it works <span>↓</span></a></div>

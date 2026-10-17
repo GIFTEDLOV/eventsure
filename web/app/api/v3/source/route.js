@@ -12,7 +12,7 @@ export async function GET(){
   const actual=createHash("sha256").update(bytes).digest("hex");
   if(actual!==HASH)throw Error("Deployed source hash mismatch");
   return new Response(bytes,{headers:{"content-type":"text/x-python; charset=utf-8",
-   "content-disposition":"attachment; filename=EventSureV3_2.py","cache-control":"no-store","x-content-type-options":"nosniff"}});
+   "content-disposition":"attachment; filename=EventSureV3_3.py","cache-control":"no-store","x-content-type-options":"nosniff"}});
  }catch(e){return Response.json({error:String(e)},{status:502,headers:{"cache-control":"no-store"}})}
 }
 

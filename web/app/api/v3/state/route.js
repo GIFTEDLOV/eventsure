@@ -8,7 +8,7 @@ export async function GET(){
  try{
   const client=createClient({chain:studionet,endpoint:RPC});
   const info=await client.readContract({address:CONTRACT,functionName:"contract_info",args:[]});
-  if(info.version!=="3.2.0"||Number(info.chain_id)!==CHAIN_ID)throw Error("Unrecognized contract");
+  if(info.version!=="3.3.0"||Number(info.chain_id)!==CHAIN_ID)throw Error("Unrecognized contract");
   const ids=await client.readContract({address:CONTRACT,functionName:"get_case_ids",args:[]});
   const ordered=[...ids].reverse().slice(0,30);
   if(ids.includes(QUALIFICATION)&&!ordered.includes(QUALIFICATION))ordered.unshift(QUALIFICATION);

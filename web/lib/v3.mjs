@@ -1,10 +1,10 @@
-export const CONTRACT="0x1e373772BfbCB70d63D7274b36B17e763a84210e";
+export const CONTRACT="0x33d84fF024161DDCaDa0412Dc1D52dbDb1f149b0";
 export const CHAIN_ID=61999;
 export const CHAIN_HEX="0xf22f";
 export const RPC="https://studio.genlayer.com/api";
-export const HASH="9cc30efa9d1107afc30eb1e94d3d6b8cd0671f57f810c17d3801d6dba688b02f";
+export const HASH="63871815cd3a537dae86defe0f434aa5a08a551dce97a91ef8a76e71c0100abd";
 export const EXPLORER="https://explorer-studio.genlayer.com";
-export const QUALIFICATION="EVS-APOLLO-V32-FBC51962F919"; // Real on-chain V3.2 qualification case; do not imply VERIFIED.
+export const QUALIFICATION=""; // Real on-chain V3.2 qualification case; do not imply VERIFIED.
 export const short=v=>v?String(v).slice(0,7)+"..."+String(v).slice(-4):"—";
 export const humanDate=v=>v?new Date(v).toLocaleString():"—";
 export function validateCase(v){
