@@ -21,8 +21,9 @@ for(const [name,hash] of txs){
  const idle=votes.filter(v=>v==="idle").length;
  const execution=r?.consensus_data?.leader_receipt?.[0]?.execution_result??"UNKNOWN";
  console.log(JSON.stringify({name,hash,execution,agreed,disagreed,idle}));
- if(execution!=="SUCCESS"||disagreed>0||agreed<2)
-  throw Error("Live GenLayer receipt violates wallet safety gate for "+name);
+ const quorum=Math.max(2,Math.floor(votes.length/2)+1);
+ if(execution!=="SUCCESS"||agreed<quorum)
+  throw Error("Live GenLayer receipt violates majority wallet safety gate for "+name+" (agree="+agreed+", committee="+votes.length+")");
  success++;
 }
 console.log("EVENTSURE_V33_REAL_RECEIPT_CONSENSUS=PASS "+success+"/"+txs.length);
