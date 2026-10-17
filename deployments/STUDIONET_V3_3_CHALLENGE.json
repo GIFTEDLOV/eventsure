@@ -1,0 +1,18 @@
+{
+  "network": "GenLayer Studionet",
+  "chain_id": 61999,
+  "contract": "0x33d84fF024161DDCaDa0412Dc1D52dbDb1f149b0",
+  "case_id": "EVS-APOLLO-V33-53368258196A",
+  "previous_state": "PRELIMINARY",
+  "previous_decision": "INCONCLUSIVE",
+  "result_state": "CHALLENGED",
+  "challenge_count": 1,
+  "transaction": "0xe3b848a2b64ae6d679122e056d9261b6dc84a233244f4c54e364a2b01824a1da",
+  "transaction_status": "FINALIZED",
+  "execution_result": "SUCCESS",
+  "validator_agreement": "agreed per CI acceptance criteria",
+  "challenge_reference": "https://airandspace.si.edu/explore/stories/apollo-missions/apollo-11-moon-landing/apollo-11-timeline",
+  "independent_positive_case_untouched": "EVS-APOLLO-POS-V33-E453D2D5E670",
+  "github_actions": "https://github.com/GIFTEDLOV/eventsure/actions/runs/39015191977",
+  "remaining": "reconsider_case after original challenge deadline; finalization after reconsideration window"
+}
