@@ -1,36 +1,81 @@
-# EventSure — Public Evidence Verification on GenLayer
+# EventSure — Public Evidence Verification Protocol
 
-EventSure is a **contract-first, reusable Intelligent Contract and companion dApp**. The canonical V3.1 release directly retrieves frozen public evidence, asks GenLayer validators to independently evaluate a bounded semantic decision, allows objections, and finalizes only after a review window. Its frontend provides a dedicated public landing page and wallet-connected verification console.
+**A reusable GenLayer Intelligent Contract with a companion public application.**
 
-Website: https://eventsure-studionet.vercel.app
-GitHub: https://github.com/GIFTEDLOV/eventsure
-Canonical Studionet contract: 0x13Bc702936d8d7Bd5880d4A16119690149D3D4c7
-Chain ID: 61999
-RPC: https://studio.genlayer.com/api
-Canonical source SHA256: 0fe025b631642094a3f86d49b6d928ba76a00c1af1102a2699036fb959a97acb
+EventSure freezes event criteria, deadlines and public evidence sources, then uses GenLayer validator consensus to evaluate whether a claim is substantively supported. The Intelligent Contract is the product; the website is a developer and end-user interface for it. EventSure provides a common verification primitive for grants, software releases, public commitments, governance and documented milestones without requiring each integrator to deploy a custom adjudicator.
 
-## Protocol
+## Canonical V3.2 (Studionet)
 
-CREATE → FREEZE → optional ATTEST → RESOLVE (contract-side public web retrieval + GenLayer validator consensus) → PRELIMINARY → optional CHALLENGE and RECONSIDER → FINALIZE (24-hour review period).
+| Property | Value |
+| --- | --- |
+| GenLayer network | Studionet, chain ID `61999` |
+| Intelligent Contract | [`0x1e373772BfbCB70d63D7274b36B17e763a84210e`](https://explorer-studio.genlayer.com/address/0x1e373772BfbCB70d63D7274b36B17e763a84210e) |
+| Contract source | [`contracts/EventSureV3_2.py`](contracts/EventSureV3_2.py) |
+| SHA-256 | `9cc30efa9d1107afc30eb1e94d3d6b8cd0671f57f810c17d3801d6dba688b02f` |
+| Deployment tx | [`0x9ec31ddb...a6e7`](https://explorer-studio.genlayer.com/tx/0x9ec31ddb100be028720809f9ead6f8e6e8ddaa5a9fe4bf6f4069414ef141a6e7) |
+| Deployment validation | **FINALIZED / SUCCESS**, exact on-chain code bytes and 14 public methods verified |
+| Proof | [GitHub Actions deployment evidence](https://github.com/GIFTEDLOV/eventsure/actions/runs/38987414077) |
+| RPC | `https://studio.genlayer.com/api` |
+| Frontend | [`web/`](web/) — responsive landing page and wallet-connected console |
+| Published site | https://eventsure-studionet.vercel.app (verify V3.2 promotion before claiming this is the canonical public frontend) |
+| Live qualification | Case `EVS-APOLLO-V32-FBC51962F919` — real create and freeze completed, GenLayer semantic resolution pending |
+| Submission | **NOT SUBMITTED** to the GenLayer Portal |
 
-Anyone may create a case with distinct public evidence sources, a frozen question, deadline, verification rule, and optional attestors (up to 5, configurable quorum). No operator controls an admin key. The contract, not the frontend, retrieves web evidence and performs judgment. Two or more sources must substantiate the claim and its timing for VERIFIED. Failure or insufficient evidence must not be represented as verified truth.
+V3.2 deployed from a fresh temporary account with **zero testnet GEN**, using a GitHub Actions runner; no private key was committed or stored in repository secrets. See `deployments/STUDIONET_V3_2_DEPLOYMENT.json`.
 
-V2 was a weaker attestation-only prototype. V3 introduced web retrieval but failed the first live resolution due to an SDK Response.status_code mismatch. V3.1 fixes this issue; each release has a separate deployed contract and immutable source hash.
+## Why this requires GenLayer
 
-## Develop
+Traditional smart contracts cannot independently evaluate subjective evidence in unstructured public webpages. EventSure uses GenVM's native web retrieval and semantic prompts under validator consensus to assess claims against frozen rules. Deterministic contract logic separately enforces who can freeze, attest, challenge, reconsider and finalize.
 
-- Python 3.12+, Node.js 24.x.
-- Python tests: python -m unittest discover -s tests -v
-- GenVM validation: GENVM_VERSION=v0.6.0-rc6 genvm-lint check contracts/EventSureV3_1.py
-- Frontend: cd web && npm ci && npm test && npm run build
-- Public routes: /, /app, /api/v3/state, /api/v3/source
-- Provenance: node scripts/verify_v3_1.mjs (root dependencies installed)
+```text
+Create case → Freeze immutable policy → Optional attestor submissions
+                       ↓
+             Event deadline expires
+                       ↓
+ GenVM leader + validators fetch frozen public-source URLs
+                       ↓
+  Structured semantic agreement + source-excerpt digest agreement
+                       ↓
+           Preliminary VERIFIED or INCONCLUSIVE
+                       ↓
+        Challenge window (up to 8 distinct wallets)
+                       ↓
+  Optional reconsideration → 24-hour review → Finalization
+```
 
-Refer to docs/EVENTSURE_V3_AUDIT.md and docs/PROJECT_TRACK_V3_1.md.
+The contract supports seven public writes (`create_case`, `freeze_case`, `attest`, `resolve_case`, `challenge_case`, `reconsider_case`, `finalize_case`) and seven public reads (`contract_info`, `get_case`, `get_case_ids`, `get_attestation`, `get_challenge`, `get_audit_count`, `get_audit`). No privileged owner can rewrite a frozen case's policy.
 
-## Cautions
+## Reuse it in your own application
 
-This is testnet research infrastructure. Website diversity is not the same as independent ownership of publications. Public documents can be unavailable or misleading; LLM and validators can disagree. The first challenge can monopolize a case's challenge window. No escrow or payout integration is provided. Any unqualified live resolution must be recorded as such. Do not submit private information as public on-chain evidence. Wallet support requires end-to-end checks with each provider.
+See **[developer integration guide](docs/INTEGRATION_V3_2.md)** for contract methods, wallet SDK usage, required argument formats and the review lifecycle.
 
-Conceptual inspiration: GenLayer Labs Intelligent Oracle (MIT), https://github.com/genlayerlabs/intelligent-oracle.
+The companion app provides a landing page (`/`), verification dashboard (`/app`), public case registry and source/audit routes (`/api/v3/state`, `/api/v3/source`). Integrators can call GenLayer directly without using the app.
 
+## Reproducible checks
+
+```sh
+npm ci
+python -m unittest discover -s tests -v
+npm --prefix web ci
+npm --prefix web test
+npm --prefix web run build
+node scripts/verify_v3_2.mjs
+```
+
+GenVM validation uses `genvm-lint check contracts/EventSureV3_2.py` against the compatible pinned GenVM runner. GitHub Actions also builds the web app, checks dependencies, verifies original V3.1 provenance and captures actual desktop and mobile Chromium screenshots.
+
+## Trust boundaries
+
+**VERIFIED is not a guarantee of objective external truth.** It means the frozen sources and event timing were judged sufficient under the frozen policy by GenLayer's validator consensus. Domain diversity is not proof of publisher independence. Creator selection and framing can introduce bias. External websites may be unreachable, change content, redirect, misstate publication times or contain adversarial text. Excerpt hashing binds validator input to the decision but does not prove archival authenticity. Challenge slots are limited to eight addresses and are not Sybil resistant. No third-party security audit, escrow/payment integration or production-network qualification exists.
+
+For any missing, contradictory, untimely or unsafe evidence, show `INCONCLUSIVE` or a failed transaction honestly. **Never invent a positive on-chain decision.**
+
+See [V3.2 threat model](docs/SECURITY_V3_2.md), [original audit](docs/EVENTSURE_V3_AUDIT.md), and [Project Track release status](docs/PROJECT_TRACK_V3_2.md).
+
+## Previous deployments preserved
+
+- V2 attestation-only contract, tag [`v2.0.2`](https://github.com/GIFTEDLOV/eventsure/releases/tag/v2.0.2).
+- V3 original live source-retrieval attempt failed during resolution; retained for provenance.
+- V3.1 Studionet contract `0x13Bc702936d8d7Bd5880d4A16119690149D3D4c7`; historical source/verifier preserved.
+
+EventSure is independent testnet research software. Inspired in part by [GenLayer Intelligent Oracle](https://github.com/genlayerlabs/intelligent-oracle) under its MIT license. No GenLayer approval or mainnet readiness is implied.
