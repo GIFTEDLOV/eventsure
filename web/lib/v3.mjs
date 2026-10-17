@@ -4,7 +4,7 @@ export const CHAIN_HEX="0xf22f";
 export const RPC="https://studio.genlayer.com/api";
 export const HASH="63871815cd3a537dae86defe0f434aa5a08a551dce97a91ef8a76e71c0100abd";
 export const EXPLORER="https://explorer-studio.genlayer.com";
-export const QUALIFICATION=""; // Real on-chain V3.2 qualification case; do not imply VERIFIED.
+export const QUALIFICATION="EVS-APOLLO-V33-53368258196A"; // Genuine on-chain PRELIMINARY/INCONCLUSIVE evidence case; not a VERIFIED verdict.
 export const short=v=>v?String(v).slice(0,7)+"..."+String(v).slice(-4):"—";
 export const humanDate=v=>v?new Date(v).toLocaleString():"—";
 export function validateCase(v){
