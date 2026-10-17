@@ -1,0 +1,19 @@
+name: EventSure V3.2 Receipt Diagnosis
+on:
+  push:
+    branches:
+      - release/eventsure-v3.1
+permissions:
+  contents: read
+jobs:
+  inspect:
+    if: ${{ contains(github.event.head_commit.message, '[DIAG_V32]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci
+      - run: node scripts/diagnose_v3_2_resolution.mjs
