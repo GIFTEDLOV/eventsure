@@ -1,10 +1,10 @@
-export const CONTRACT="0x13Bc702936d8d7Bd5880d4A16119690149D3D4c7";
+export const CONTRACT="0x1e373772BfbCB70d63D7274b36B17e763a84210e";
 export const CHAIN_ID=61999;
 export const CHAIN_HEX="0xf22f";
 export const RPC="https://studio.genlayer.com/api";
-export const HASH="0fe025b631642094a3f86d49b6d928ba76a00c1af1102a2699036fb959a97acb";
+export const HASH="9cc30efa9d1107afc30eb1e94d3d6b8cd0671f57f810c17d3801d6dba688b02f";
 export const EXPLORER="https://explorer-studio.genlayer.com";
-export const QUALIFICATION="EVS-WEB-V3-1-20261016";
+export const QUALIFICATION=""; // Set only after actual V3.2 case is proven on-chain.
 export const short=v=>v?String(v).slice(0,7)+"..."+String(v).slice(-4):"—";
 export const humanDate=v=>v?new Date(v).toLocaleString():"—";
 export function validateCase(v){
@@ -15,7 +15,7 @@ export function validateCase(v){
  if(!v.deadline||!Number.isFinite(Date.parse(v.deadline))||Date.parse(v.deadline)<=Date.now())throw Error("Deadline must be in the future.");
  const urls=(v.sources||[]).map(s=>s.trim()).filter(Boolean);
  if(urls.length<2||urls.length>3)throw Error("Provide 2–3 independent public sources.");
- const hosts=urls.map(u=>{let p;try{p=new URL(u)}catch{throw Error("Invalid source URL.")}if(p.protocol!=="https:"||p.username||p.password||p.port||p.hash||p.pathname==="/")throw Error("Sources require public HTTPS document URLs without custom ports.");if(!/^[a-z0-9][a-z0-9.-]{2,180}\.[a-z]{2,24}$/.test(p.hostname)||/localhost|\.local$|\.internal$|metadata/.test(p.hostname))throw Error("Source hostname must be public.");return p.hostname==="github.com"||p.hostname.endsWith(".github.com")||p.hostname==="githubusercontent.com"||p.hostname.endsWith(".githubusercontent.com")?"github":p.hostname;});
+ const hosts=urls.map(u=>{let p;try{p=new URL(u)}catch{throw Error("Invalid source URL.")}if(p.protocol!=="https:"||p.username||p.password||p.port||p.hash||p.pathname==="/")throw Error("Sources require public HTTPS document URLs without custom ports.");if(!/^[a-z0-9][a-z0-9.-]{2,180}\.[a-z]{2,24}$/.test(p.hostname)||/localhost|\.local$|\.internal$|metadata/.test(p.hostname))throw Error("Source hostname must be public.");const host=p.hostname.toLowerCase();if(host==="github.com"||host.endsWith(".github.com")||host==="githubusercontent.com"||host.endsWith(".githubusercontent.com"))return "github";const labels=host.replace(/^www\./,"").split(".");const suffix=labels.slice(-2).join(".");const multipart=new Set(["co.uk","org.uk","gov.uk","com.au","com.ng","co.za","com.br","co.jp","co.in","com.mx"]);return labels.slice(-(multipart.has(suffix)?3:2)).join(".");});
  if(new Set(hosts).size!==hosts.length)throw Error("Sources must come from distinct hosts.");
  const att=(v.attestors||[]).map(s=>s.trim()).filter(Boolean);
  if(att.length>5||new Set(att.map(s=>s.toLowerCase())).size!==att.length||att.some(s=>!/^0x[a-f0-9]{40}$/i.test(s)||/^0x0{40}$/i.test(s)))throw Error("Provide up to 5 unique valid attestor wallets.");
@@ -26,7 +26,7 @@ export function validateCase(v){
 export const canFreeze=(c,w)=>Boolean(c&&w&&c.state==="DRAFT"&&c.creator?.toLowerCase()===w.toLowerCase()&&Date.parse(c.deadline)>Date.now());
 export const canAttest=(c,w)=>Boolean(c&&w&&c.state==="FROZEN"&&c.attestors?.includes(w.toLowerCase())&&!c.attestation_ids?.includes(w.toLowerCase())&&Date.parse(c.deadline)>=Date.now());
 export const canResolve=c=>Boolean(c&&c.state==="FROZEN"&&Date.parse(c.deadline)<=Date.now()&&c.attestation_count>=c.quorum);
-export const canChallenge=c=>Boolean(c&&c.state==="PRELIMINARY"&&c.challenge_count===0&&Date.parse(c.challenge_deadline)>Date.now());
-export const canReconsider=c=>Boolean(c&&c.state==="CHALLENGED");
+export const canChallenge=(c,w)=>Boolean(c&&["PRELIMINARY","CHALLENGED"].includes(c.state)&&(c.challenge_count??0)<8&&Date.parse(c.challenge_deadline)>Date.now()&&(!w||!c.challenges?.some(v=>v.author?.toLowerCase()===w.toLowerCase())));
+export const canReconsider=c=>Boolean(c&&c.state==="CHALLENGED"&&Date.parse(c.challenge_deadline)<=Date.now());
 export const canFinalize=c=>Boolean(c&&c.state==="PRELIMINARY"&&Date.parse(c.challenge_deadline)<=Date.now());
 

@@ -17,6 +17,9 @@ test("attestor permission",()=>assert.equal(canAttest({state:"FROZEN",attestors:
 test("attestation replay blocked",()=>assert.equal(canAttest({state:"FROZEN",attestors:[addr],attestation_ids:[addr],deadline:valid.deadline},addr),false));
 test("early resolution blocked",()=>assert.equal(canResolve({state:"FROZEN",deadline:valid.deadline,attestation_count:1,quorum:1}),false));
 test("open challenge",()=>assert.equal(canChallenge({state:"PRELIMINARY",challenge_count:0,challenge_deadline:valid.deadline}),true));
-test("challenge once",()=>assert.equal(canChallenge({state:"PRELIMINARY",challenge_count:1,challenge_deadline:valid.deadline}),false));
-test("reconsideration only challenged",()=>{assert.equal(canReconsider({state:"CHALLENGED"}),true);assert.equal(canReconsider({state:"FINALIZED"}),false)});
+test("up to eight challengers",()=>{assert.equal(canChallenge({state:"CHALLENGED",challenge_count:1,challenge_deadline:valid.deadline}),true);assert.equal(canChallenge({state:"CHALLENGED",challenge_count:8,challenge_deadline:valid.deadline}),false)});
+test("reconsideration only after frozen challenge window",()=>{assert.equal(canReconsider({state:"CHALLENGED",challenge_deadline:valid.deadline}),false);assert.equal(canReconsider({state:"CHALLENGED",challenge_deadline:"2020-01-01T00:00:00Z"}),true);assert.equal(canReconsider({state:"FINALIZED"}),false)});
 test("no early finalization",()=>assert.equal(canFinalize({state:"PRELIMINARY",challenge_deadline:valid.deadline}),false));
+
+test("subdomain aliasing prevented in UI",()=>assert.throws(()=>validateCase({...valid,sources:["https://api.example.org/evidence","https://www.example.org/evidence"]})));
+test("original challenger cannot monopolize repeat challenge",()=>assert.equal(canChallenge({state:"CHALLENGED",challenge_count:1,challenge_deadline:valid.deadline,challenges:[{author:addr}]},addr),false));

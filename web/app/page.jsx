@@ -3,7 +3,7 @@ import "./landing.css";
 import {CONTRACT,HASH,EXPLORER} from "../lib/v3.mjs";
 const Arrow=()=> <span aria-hidden="true">↗</span>;
 const features=[
- ["01 / EVIDENCE","Sources, not assertions.","Frozen public URLs are independently retrieved during GenLayer validator execution. The creator cannot silently swap sources after freezing.","◈"],
+ ["01 / EVIDENCE","Source-bound evidence.","Frozen public URLs are retrieved during GenLayer validator execution and hashed into the consensus result. Separate domains alone do not guarantee publisher independence.","◈"],
  ["02 / CONSENSUS","Judgment with constraints.","Semantic evaluation has explicit fields: verdict, independent-source count and timing. Validators compare the essential decision.","◇"],
  ["03 / DUE PROCESS","Challenge the outcome.","Preliminary decisions enter a public objection window, with reconsideration and time-gated finalization.","◎"]
 ];
@@ -23,7 +23,7 @@ export default function Landing(){
  <main>
  <section className="es-hero"><div className="es-grid-bg"/>
   <div className="es-hero-copy">
-   <div className="es-strap"><span className="es-live-dot"/> GENLAYER INTELLIGENT CONTRACT <span className="es-strap-tail">STUDIONET / V3.1</span></div>
+   <div className="es-strap"><span className="es-live-dot"/> GENLAYER INTELLIGENT CONTRACT <span className="es-strap-tail">STUDIONET / V3.2</span></div>
    <h1>Truth needs<br/><em>a higher standard.</em></h1>
    <p className="es-lede">The evidence-first verification layer for promises, milestones and public-world outcomes. Frozen rules. Independent sources. On-chain consensus.</p>
    <div className="es-hero-actions"><Link href="/app" className="es-primary">Explore the protocol <Arrow/></Link><a href="#protocol" className="es-secondary">How it works <span>↓</span></a></div>
