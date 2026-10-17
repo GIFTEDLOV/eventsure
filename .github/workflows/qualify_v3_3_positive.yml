@@ -1,0 +1,48 @@
+name: EventSure V3.3 Positive Outcome Trial
+on:
+  push:
+    branches:
+      - release/eventsure-v3.1
+permissions:
+  contents: read
+concurrency:
+  group: eventsure-v33-positive-once
+  cancel-in-progress: false
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - run: node --check scripts/qualify_v3_3_positive.mjs
+      - run: node scripts/check_v3_3_positive_sources.mjs
+  qualify:
+    needs: preflight
+    if: ${{ contains(github.event.head_commit.message, '[AUTO_QUALIFY_V33_POSITIVE]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - name: Run one real Studionet case and record actual verdict
+        env:
+          EVENTSURE_EPHEMERAL_QUALIFY: AUTHORIZED_STUDIONET_ONCE
+        run: node scripts/qualify_v3_3_positive.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eventsure-v33-positive-path-attempt
+          path: artifacts/v3_3_positive_qualification/
+          if-no-files-found: warn
+          retention-days: 90
