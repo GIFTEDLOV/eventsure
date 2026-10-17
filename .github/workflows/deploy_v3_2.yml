@@ -1,0 +1,55 @@
+name: EventSure V3.2 Studionet Deployment (Guarded)
+on:
+  push:
+    branches:
+      - release/eventsure-v3.1
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: eventsure-v32-studionet-deploy
+  cancel-in-progress: false
+jobs:
+  signing-readiness:
+    name: Check signing readiness (no secret values)
+    runs-on: ubuntu-latest
+    env:
+      HAS_SIGNER: ${{ secrets.EVENTSURE_PRIVATE_KEY != '' }}
+    steps:
+      - name: Report presence only
+        run: |
+          if [ "$HAS_SIGNER" = "true" ]; then
+            echo 'EVENTSURE_V3_2_SIGNER_CONFIGURED=YES'
+          else
+            echo 'EVENTSURE_V3_2_SIGNER_CONFIGURED=NO'
+          fi
+  deploy:
+    if: ${{ github.event_name == 'push' && github.actor == 'GIFTEDLOV' && contains(github.event.head_commit.message, '[DEPLOY_V3_2]') }}
+    name: Guarded on-chain deploy (one attempt)
+    runs-on: ubuntu-latest
+    timeout-minutes: 85
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - name: Verify frozen V3.2 source fingerprint
+        run: |
+          echo '9cc30efa9d1107afc30eb1e94d3d6b8cd0671f57f810c17d3801d6dba688b02f  contracts/EventSureV3_2.py' | sha256sum --check --status
+          echo 'V3_2_FROZEN_SOURCE=PASS'
+      - name: Deploy and verify Studionet transaction
+        env:
+          EVENTSURE_PRIVATE_KEY: ${{ secrets.EVENTSURE_PRIVATE_KEY }}
+          EVENTSURE_APPROVE_NEW_DEPLOY: EXPLICITLY_AUTHORIZED
+        run: node scripts/deploy_v3_2.mjs
+      - name: Preserve reconciliation journal and proof
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eventsure-v32-deployment-attempt
+          path: artifacts/v3_2/
+          if-no-files-found: warn
+          retention-days: 90
