@@ -1,0 +1,51 @@
+/** Secretless one-attempt public challenge of an existing INCONCLUSIVE test case. */
+import fs from "node:fs";
+import crypto from "node:crypto";
+import path from "node:path";
+import {fileURLToPath} from "node:url";
+import {createAccount,createClient} from "genlayer-js";
+import {studionet} from "genlayer-js/chains";
+import {TransactionStatus} from "genlayer-js/types";
+const root=fileURLToPath(new URL("../",import.meta.url));
+const caseId="EVS-APOLLO-V33-53368258196A";
+const expectedHash="63871815cd3a537dae86defe0f434aa5a08a551dce97a91ef8a76e71c0100abd";
+const manifest=JSON.parse(fs.readFileSync(root+"deployments/STUDIONET_V3_3_DEPLOYMENT.json","utf8"));
+const source=fs.readFileSync(root+"contracts/EventSureV3_3.py");
+const actualHash=crypto.createHash("sha256").update(source).digest("hex");
+if(actualHash!==expectedHash||manifest.source_sha256!==expectedHash||manifest.chain_id!==61999||manifest.status!=="FINALIZED")
+ throw Error("Frozen contract provenance mismatch");
+if(process.env.EVENTSURE_CHALLENGE_AUTH!=="AUTHORIZED_STUDIONET_ONCE")throw Error("Challenge approval guard missing");
+const rpc="https://studio.genlayer.com/api";
+const reader=createClient({chain:studionet,endpoint:rpc});
+let state=await reader.readContract({address:manifest.address,functionName:"get_case",args:[caseId]});
+if(state.state!=="PRELIMINARY"||state.decision!=="INCONCLUSIVE"||Number(state.challenge_count)!==0)
+ throw Error("Sample case not in expected unchallenged preliminary inconclusive state");
+if(Date.now()>Date.parse(state.challenge_deadline)-20000)throw Error("Challenge period too close to expiration");
+const signer=createAccount();
+const out=path.join(root,"artifacts","v3_3_challenge");
+fs.mkdirSync(out,{recursive:true});
+const file=path.join(out,"attempt.json");
+if(fs.existsSync(file))throw Error("Journal exists; reconcile first");
+const objection="Reconsider this inconclusive historical Apollo 11 determination because a dated Smithsonian mission timeline directly supports the 20 July 1969 event chronology and was absent from the first pair of public URLs.";
+const reference="https://airandspace.si.edu/explore/stories/apollo-missions/apollo-11-moon-landing/apollo-11-timeline";
+const journal={case_id:caseId,contract:manifest.address,network:61999,signer:signer.address,reference,objection,challenge_deadline:state.challenge_deadline,phase:"PRE_BROADCAST",started:new Date().toISOString()};
+const save=()=>fs.writeFileSync(file,JSON.stringify(journal,null,2)+"\n",{mode:0o600});
+save();
+const client=createClient({chain:studionet,endpoint:rpc,account:signer});
+journal.phase="BROADCAST_UNCERTAIN";save();
+const tx=await client.writeContract({address:manifest.address,functionName:"challenge_case",args:[caseId,objection,reference],account:signer});
+journal.tx=tx;save();
+console.log("EVENTSURE_V33_CHALLENGE_TX="+tx);
+const receipt=await client.waitForTransactionReceipt({hash:tx,status:TransactionStatus.FINALIZED,retries:150});
+journal.execution=receipt?.consensus_data?.leader_receipt?.[0]?.execution_result??"UNKNOWN";
+journal.votes=receipt?.consensus_data?.votes??{};
+const votes=Object.values(journal.votes);
+if(journal.execution!=="SUCCESS"||votes.includes("disagree")||votes.filter(v=>v==="agree").length<2)throw Error("Finalized challenge lacks execution or validator consensus");
+state=await reader.readContract({address:manifest.address,functionName:"get_case",args:[caseId]});
+if(state.state!=="CHALLENGED"||Number(state.challenge_count)!==1)throw Error("Challenge readback incorrect");
+const recorded=await reader.readContract({address:manifest.address,functionName:"get_challenge",args:[caseId]});
+if(recorded.challenges?.length!==1||recorded.challenges[0]?.author?.toLowerCase()!==signer.address.toLowerCase())
+ throw Error("Challenger identity mismatch on-chain");
+journal.phase="VERIFIED_SUCCESS";journal.status="FINALIZED";journal.state=state.state;journal.challenge_count=state.challenge_count;journal.completed_at=new Date().toISOString();save();
+console.log("EVENTSURE_V33_CHALLENGE=PASS");
+console.log(JSON.stringify({tx,case_id:caseId,state:state.state,challenge_count:state.challenge_count,network:61999}));
