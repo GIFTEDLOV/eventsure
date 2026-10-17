@@ -16,6 +16,12 @@ jobs:
     env:
       HAS_SIGNER: ${{ secrets.EVENTSURE_PRIVATE_KEY != '' }}
     steps:
+      - uses: actions/checkout@v4
+      - name: Validate deployment script syntax and exact V3.2 fingerprint (no signer required)
+        run: |
+          node --check scripts/deploy_v3_2.mjs
+          echo '9cc30efa9d1107afc30eb1e94d3d6b8cd0671f57f810c17d3801d6dba688b02f  contracts/EventSureV3_2.py' | sha256sum --check --status
+          echo 'EVENTSURE_V3_2_DEPLOY_PREFLIGHT=PASS'
       - name: Report presence only
         run: |
           if [ "$HAS_SIGNER" = "true" ]; then
