@@ -61,5 +61,7 @@ jobs:
           cache-dependency-path: package-lock.json
       - run: npm ci
       - name: Frozen deployed-source and live consensus proof
-        run: node scripts/verify_v3_1.mjs
+        run: |
+          node scripts/verify_v3_1.mjs
+          node scripts/verify_v3_2.mjs
 
