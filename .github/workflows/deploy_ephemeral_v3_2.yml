@@ -1,0 +1,52 @@
+name: EventSure V3.2 Ephemeral Studionet Qualification
+on:
+  push:
+    branches:
+      - release/eventsure-v3.1
+permissions:
+  contents: read
+concurrency:
+  group: eventsure-v32-one-shot-ephemeral
+  cancel-in-progress: false
+jobs:
+  preflight:
+    name: Ephemeral signer feasibility (no private key)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - name: Verify exact V3.2 code and script syntax
+        run: |
+          node --check scripts/deploy_v3_2_ephemeral.mjs
+          echo '9cc30efa9d1107afc30eb1e94d3d6b8cd0671f57f810c17d3801d6dba688b02f  contracts/EventSureV3_2.py' | sha256sum --check
+  deploy:
+    name: Deploy V3.2 with temporary Studionet signer — ONE ATTEMPT
+    needs: preflight
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[AUTO_DEPLOY_V32]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - name: Deploy and verify canonical V3.2 on Studionet
+        env:
+          EVENTSURE_EPHEMERAL_DEPLOY: AUTHORIZED_STUDIONET_ONCE
+        run: node scripts/deploy_v3_2_ephemeral.mjs
+      - name: Preserve public transaction evidence, including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eventsure-v32-ephemeral-deployment-proof
+          path: artifacts/v3_2_ephemeral/
+          if-no-files-found: warn
+          retention-days: 90
