@@ -1,0 +1,43 @@
+{
+  "network": "GenLayer Studionet",
+  "chain_id": 61999,
+  "address": "0x33d84fF024161DDCaDa0412Dc1D52dbDb1f149b0",
+  "source_sha256": "63871815cd3a537dae86defe0f434aa5a08a551dce97a91ef8a76e71c0100abd",
+  "case_id": "EVS-APOLLO-V33-53368258196A",
+  "state": "PRELIMINARY",
+  "decision": "INCONCLUSIVE",
+  "deadline": "2026-10-17T06:42:25.423Z",
+  "sources": [
+    "https://www.nasa.gov/mission/apollo-11/",
+    "https://airandspace.si.edu/collections/apollo-11"
+  ],
+  "source_digests": [
+    "85dab9fbb17786b522012df7b9d2c662496ccf04e517954e2b55ad951152cec0",
+    "ae0b26c68939e8214056c2517af3b5091f1c674c8aef5f1e1fbab7804a78829b"
+  ],
+  "vote": {
+    "attestations_consistent": true,
+    "independent_sources": 0,
+    "supported": false,
+    "time_supported": false
+  },
+  "transactions": {
+    "create": {
+      "tx": "0xa61ab77558acad81b766faa6e7cb1775136bb2e529f315c562a01441b748fa12",
+      "status": "FINALIZED",
+      "execution_result": "SUCCESS"
+    },
+    "freeze": {
+      "tx": "0xe694ee8b19d612fe6f3154a5bb554e794a826d9ba3f3dc1be1ed2d2e36730edd",
+      "status": "FINALIZED",
+      "execution_result": "SUCCESS"
+    },
+    "resolve": {
+      "tx": "0x35486954ec65ba41f2d2bb9ced83102af92b1fe9717e1683d4cd2b7ce2f60469",
+      "status": "FINALIZED",
+      "execution_result": "SUCCESS"
+    }
+  },
+  "github_actions": "https://github.com/GIFTEDLOV/eventsure/actions/runs/39010624241",
+  "qualifies": "conservative INCONCLUSIVE path only; VERIFIED path unproven"
+}
