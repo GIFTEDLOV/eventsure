@@ -1,0 +1,1 @@
+EventSure V3.3 is a fresh, separately audited source candidate. Previous V3.2 deployment and failed resolution receipts remain historical. No V3.3 deployment or semantic qualification has been verified yet.
