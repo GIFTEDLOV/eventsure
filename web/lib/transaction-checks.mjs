@@ -13,10 +13,15 @@ export function verifyConsensusReceipt(receipt) {
  if(leader!=="SUCCESS")throw Error("Transaction did not execute successfully under GenLayer consensus.");
  const votes=Object.values(receipt?.consensus_data?.votes??{});
  if(!votes.length)throw Error("No validator votes in receipt. Reconcile transaction before retrying.");
- if(votes.some(v=>v==="disagree"))throw Error("GenLayer validators disagreed. Transaction may not have applied; inspect the hash.");
  const agrees=votes.filter(v=>v==="agree").length;
- if(agrees<2)throw Error("Insufficient validator agreements in receipt. Inspect the transaction.");
- return {agree:agrees,unresponsive:votes.filter(v=>v==="idle").length};
+ const disagrees=votes.filter(v=>v==="disagree").length;
+ // GenLayer can FINALIZE a transaction with a validator majority even if a
+ // minority votes disagree (observed 3 agree / 2 disagree on a real V3.3
+ // VERIFIED semantic resolution). Never demand unanimity.
+ const quorum=Math.max(2,Math.floor(votes.length/2)+1);
+ if(agrees<quorum)
+  throw Error("Insufficient agreeing validators: "+agrees+"/"+votes.length+"; quorum "+quorum+". Inspect transaction.");
+ return {agree:agrees,disagree:disagrees,quorum,unresponsive:votes.filter(v=>v==="idle").length};
 }
 export function verifyCaseReadback(method,record,id){
  const expected=EXPECTED_CASE_STATES[method];
