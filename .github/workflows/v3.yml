@@ -67,4 +67,5 @@ jobs:
           node scripts/verify_v3_1.mjs
           node scripts/verify_v3_2.mjs
           node scripts/verify_v3_3.mjs
+          node scripts/audit_v3_3_receipts.mjs
 
