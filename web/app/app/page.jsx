@@ -2,6 +2,7 @@
 import Link from "next/link";
 import {useState,useEffect,useCallback} from "react";
 import "./console.css";
+import {verifyConsensusReceipt,verifyCaseReadback} from "../../lib/transaction-checks.mjs";
 import {CONTRACT,CHAIN_ID,CHAIN_HEX,RPC,HASH,EXPLORER,QUALIFICATION,short,humanDate,
  validateCase,canFreeze,canAttest,canResolve,canChallenge,canReconsider,canFinalize} from "../../lib/v3.mjs";
 
@@ -70,9 +71,10 @@ export default function Console(){
    hash=await client.writeContract({address:CONTRACT,functionName:method,args});
    setPending(hash);setNotice("Submitted "+method+". Awaiting on-chain finality; do not submit again.");
    const receipt=await client.waitForTransactionReceipt({hash,status:TransactionStatus.FINALIZED,retries:240});
-   const status=receipt?.consensus_data?.leader_receipt?.[0]?.execution_result;
-   if(status!=="SUCCESS")throw Error("Transaction finalized without execution SUCCESS. Inspect the hash.");
-   setPending("");setNotice(method+" finalized successfully.");
+   verifyConsensusReceipt(receipt);
+   const confirmed=await client.readContract({address:CONTRACT,functionName:"get_case",args:[targetId||args[0]]});
+   verifyCaseReadback(method,confirmed,targetId||args[0]);
+   setPending("");setNotice(method+" finalized with validator agreement and confirmed on-chain state.");
    await refresh();
    if(targetId)setSelected(targetId);
    setTab("registry");
