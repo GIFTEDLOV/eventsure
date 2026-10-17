@@ -1,0 +1,48 @@
+/** One-attempt V3.3 public challenge reconsideration after the frozen challenge window. */
+import fs from "node:fs";
+import crypto from "node:crypto";
+import path from "node:path";
+import {fileURLToPath} from "node:url";
+import {createAccount,createClient} from "genlayer-js";
+import {studionet} from "genlayer-js/chains";
+import {TransactionStatus} from "genlayer-js/types";
+const root=fileURLToPath(new URL("../",import.meta.url));
+const deployed=JSON.parse(fs.readFileSync(root+"deployments/STUDIONET_V3_3_DEPLOYMENT.json","utf8"));
+const challenge=JSON.parse(fs.readFileSync(root+"deployments/STUDIONET_V3_3_CHALLENGE.json","utf8"));
+const source=fs.readFileSync(root+"contracts/EventSureV3_3.py");
+const hash=crypto.createHash("sha256").update(source).digest("hex");
+const caseId="EVS-APOLLO-V33-53368258196A";
+if(hash!=="63871815cd3a537dae86defe0f434aa5a08a551dce97a91ef8a76e71c0100abd"||deployed.source_sha256!==hash||deployed.chain_id!==61999||deployed.address!==challenge.contract)
+ throw Error("Frozen deployed provenance mismatch");
+if(process.env.EVENTSURE_RECONSIDER_AUTH!=="AUTHORIZED_STUDIONET_ONCE")throw Error("Reconsideration authorization missing");
+const RPC="https://studio.genlayer.com/api";
+const reader=createClient({chain:studionet,endpoint:RPC});
+let state=await reader.readContract({address:deployed.address,functionName:"get_case",args:[caseId]});
+if(state.state==="PRELIMINARY"&&state.round===2){console.log("EVENTSURE_V33_RECONSIDERATION_ALREADY_COMPLETED=YES");process.exit(0);}
+if(state.state!=="CHALLENGED"||Number(state.challenge_count)!==1)throw Error("Case no longer in expected CHALLENGED state");
+if(Date.now()<=Date.parse(state.challenge_deadline)+5000)throw Error("Original challenge window has not closed");
+const sign=createAccount();
+const out=path.join(root,"artifacts","v3_3_reconsider");
+fs.mkdirSync(out,{recursive:true});
+const journalFile=path.join(out,"attempt.json");
+if(fs.existsSync(journalFile))throw Error("Existing transaction attempt must be reconciled");
+const journal={case_id:caseId,contract:deployed.address,source_sha256:hash,signer:sign.address,started_at:new Date().toISOString(),phase:"PRE_BROADCAST"};
+const save=()=>fs.writeFileSync(journalFile,JSON.stringify(journal,null,2)+"\n",{mode:0o600});
+save();
+const client=createClient({chain:studionet,endpoint:RPC,account:sign});
+journal.phase="BROADCAST_UNCERTAIN";save();
+const tx=await client.writeContract({address:deployed.address,functionName:"reconsider_case",args:[caseId],account:sign});
+journal.tx=tx;save();console.log("EVENTSURE_V33_RECONSIDER_TX="+tx);
+const receipt=await client.waitForTransactionReceipt({hash:tx,status:TransactionStatus.FINALIZED,retries:150});
+const execution=receipt?.consensus_data?.leader_receipt?.[0]?.execution_result??"UNKNOWN";
+const votes=Object.values(receipt?.consensus_data?.votes??{});
+journal.execution=execution;
+journal.votes=receipt?.consensus_data?.votes??{};
+save();
+if(execution!=="SUCCESS"||votes.includes("disagree")||votes.filter(v=>v==="agree").length<2)throw Error("Reconsideration not accepted by consensus; reconcile receipt");
+state=await reader.readContract({address:deployed.address,functionName:"get_case",args:[caseId]});
+if(state.state!=="PRELIMINARY"||Number(state.round)!==2||!["VERIFIED","INCONCLUSIVE"].includes(state.decision))throw Error("Reconsideration state readback mismatch");
+journal.phase="VERIFIED_SUCCESS";journal.state=state.state;journal.decision=state.decision;journal.round=state.round;
+journal.challenge_deadline=state.challenge_deadline;journal.source_drift=state.assessment?.source_drift??null;journal.completed_at=new Date().toISOString();save();
+console.log("EVENTSURE_V33_RECONSIDERATION=PASS");
+console.log(JSON.stringify({tx,case_id:caseId,state:state.state,decision:state.decision,round:state.round,source_drift:journal.source_drift,challenge_deadline:state.challenge_deadline}));
