@@ -6,8 +6,12 @@ test("valid majority agreement with idle validators passes",()=>{
  const x=verifyConsensusReceipt(receipt({a:"agree",b:"agree",c:"agree",d:"idle"}));
  assert.equal(x.agree,3);
 });
-test("validator disagreement rejects despite successful leader",()=>{
- assert.throws(()=>verifyConsensusReceipt(receipt({a:"disagree",b:"disagree",c:"idle"})),/disagreed/);
+test("minority dissent is acceptable when GenLayer finalizes majority",()=>{
+ const vote=verifyConsensusReceipt(receipt({a:"agree",b:"agree",c:"agree",d:"disagree",e:"disagree"}));
+ assert.equal(vote.agree,3);assert.equal(vote.disagree,2);assert.equal(vote.quorum,3);
+});
+test("rejects majority dissent despite successful leader",()=>{
+ assert.throws(()=>verifyConsensusReceipt(receipt({a:"agree",b:"agree",c:"disagree",d:"disagree",e:"disagree"})),/Insufficient/);
 });
 test("rejects absent validator votes",()=>assert.throws(()=>verifyConsensusReceipt(receipt({})),/No validator/));
 test("rejects insufficient agreeing validators",()=>assert.throws(()=>verifyConsensusReceipt(receipt({a:"agree",b:"idle"})),/Insufficient/));
