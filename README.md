@@ -1,6 +1,6 @@
 # EventSure — Public Evidence Verification Protocol
 
-**V3.3 is now deployed on Studionet** at `0x33d84fF024161DDCaDa0412Dc1D52dbDb1f149b0`, [deployment transaction](https://explorer-studio.genlayer.com/tx/0xb799b06e63d934315e2a534be821fad6ae1dc7d62e9d4b129f916282f7927188). Source SHA-256: `63871815cd3a537dae86defe0f434aa5a08a551dce97a91ef8a76e71c0100abd`. Deployment FINALIZED/SUCCESS with exact source parity; V3.3 live semantic qualification is still outstanding. V3.2 is preserved below as historical evidence of the failed consensus attempt.
+**V3.3 is now deployed on Studionet** at `0x33d84fF024161DDCaDa0412Dc1D52dbDb1f149b0`, [deployment transaction](https://explorer-studio.genlayer.com/tx/0xb799b06e63d934315e2a534be821fad6ae1dc7d62e9d4b129f916282f7927188). Source SHA-256: `63871815cd3a537dae86defe0f434aa5a08a551dce97a91ef8a76e71c0100abd`. Deployment FINALIZED/SUCCESS with exact source parity; V3.3 completed a real create/freeze/resolve lifecycle with FINALIZED transactions and a recorded PRELIMINARY / INCONCLUSIVE outcome (case `EVS-APOLLO-V33-53368258196A`; [evidence](deployments/STUDIONET_V3_3_QUALIFICATION.json)). A positive VERIFIED outcome has **not** yet been established. V3.2 is preserved below as historical evidence of the failed consensus attempt.
 
 **A reusable GenLayer Intelligent Contract with a companion public application.**
 
