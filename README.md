@@ -1,10 +1,12 @@
 # EventSure — Public Evidence Verification Protocol
 
+**V3.3 is now deployed on Studionet** at `0x33d84fF024161DDCaDa0412Dc1D52dbDb1f149b0`, [deployment transaction](https://explorer-studio.genlayer.com/tx/0xb799b06e63d934315e2a534be821fad6ae1dc7d62e9d4b129f916282f7927188). Source SHA-256: `63871815cd3a537dae86defe0f434aa5a08a551dce97a91ef8a76e71c0100abd`. Deployment FINALIZED/SUCCESS with exact source parity; V3.3 live semantic qualification is still outstanding. V3.2 is preserved below as historical evidence of the failed consensus attempt.
+
 **A reusable GenLayer Intelligent Contract with a companion public application.**
 
 EventSure freezes event criteria, deadlines and public evidence sources, then uses GenLayer validator consensus to evaluate whether a claim is substantively supported. The Intelligent Contract is the product; the website is a developer and end-user interface for it. EventSure provides a common verification primitive for grants, software releases, public commitments, governance and documented milestones without requiring each integrator to deploy a custom adjudicator.
 
-## Canonical V3.2 (Studionet)
+## Historical V3.2 (Studionet; validator disagreement in live resolution)
 
 | Property | Value |
 | --- | --- |
@@ -18,7 +20,7 @@ EventSure freezes event criteria, deadlines and public evidence sources, then us
 | RPC | `https://studio.genlayer.com/api` |
 | Frontend | [`web/`](web/) — responsive landing page and wallet-connected console |
 | Published site | https://eventsure-studionet.vercel.app (verify V3.2 promotion before claiming this is the canonical public frontend) |
-| Live qualification | Case `EVS-APOLLO-V32-FBC51962F919` — real create and freeze completed, GenLayer semantic resolution pending |
+| Live qualification | Case `EVS-APOLLO-V32-FBC51962F919` — create/freeze passed, resolve FINALIZED with validator disagreement; NO-GO |
 | Submission | **NOT SUBMITTED** to the GenLayer Portal |
 
 V3.2 deployed from a fresh temporary account with **zero testnet GEN**, using a GitHub Actions runner; no private key was committed or stored in repository secrets. See `deployments/STUDIONET_V3_2_DEPLOYMENT.json`.
