@@ -4,7 +4,7 @@ export const CHAIN_HEX="0xf22f";
 export const RPC="https://studio.genlayer.com/api";
 export const HASH="9cc30efa9d1107afc30eb1e94d3d6b8cd0671f57f810c17d3801d6dba688b02f";
 export const EXPLORER="https://explorer-studio.genlayer.com";
-export const QUALIFICATION=""; // Set only after actual V3.2 case is proven on-chain.
+export const QUALIFICATION="EVS-APOLLO-V32-FBC51962F919"; // Real on-chain V3.2 qualification case; do not imply VERIFIED.
 export const short=v=>v?String(v).slice(0,7)+"..."+String(v).slice(-4):"—";
 export const humanDate=v=>v?new Date(v).toLocaleString():"—";
 export function validateCase(v){
