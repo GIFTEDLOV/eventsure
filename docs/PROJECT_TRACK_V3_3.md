@@ -1,6 +1,6 @@
 # EventSure V3.3 — GenLayer Project Track
 
-**Release status:** On-chain deployment and conservative semantic consensus qualified. Both live verdict paths have now succeeded; protected GitHub publication remains outstanding.
+**Release status (2026-10-18):** On-chain VERIFIED/INCONCLUSIVE paths and challenged reconsideration proven. Positive case FINALIZED / VERIFIED. Protected GitHub merge and Portal submission remain outstanding.
 
 ## Product
 EventSure is a reusable GenLayer Intelligent Contract that freezes distinct authoritative public sources, verification rules and deadlines, then has GenLayer validators independently fetch and semantically assess them. Its deterministic lifecycle supports optional attestor quorum, public challenges and reconsideration. A professional landing page and wallet console are provided as optional interfaces.
@@ -24,12 +24,20 @@ EventSure is a reusable GenLayer Intelligent Contract that freezes distinct auth
 - Qualification run: https://github.com/GIFTEDLOV/eventsure/actions/runs/39010624241
 
 ## Positive GenLayer qualification
-- Case `EVS-APOLLO-POS-V33-E453D2D5E670`, PRELIMINARY / VERIFIED
+- Case `EVS-APOLLO-POS-V33-E453D2D5E670`, FINALIZED / VERIFIED
 - Create `0x60277b68d7ceb22f4c4d03d2749f1ffa5cf9eddfa57e5b1ddca08ca400d8c723`
 - Freeze `0x73b07c22541ae8382368ac672ce5c6201b10cd9a4dfe819243e4aae0411230e9`
 - Resolve `0xe4aa025673ebc30c22a9771da92ebab5c29c7ca4b6ce7b700ed45ece8682da53`
-- All FINALIZED/SUCCESS, two supporting sources and time corroborated
+- Original create, freeze and resolution transactions FINALIZED/SUCCESS, two supporting sources and time corroborated
+- **Finalization transaction:** `0xb51ab16cfb9a3ec07618253e1283d70ebc26ffbf78539e85a9eb6af6423e982d` — FINALIZED/SUCCESS, five validator agreements, case FINALIZED/VERIFIED
+- Finalization proof: `deployments/STUDIONET_V3_3_FINAL_VERDICT.json`
 - Evidence `deployments/STUDIONET_V3_3_POSITIVE_QUALIFICATION.json`
+
+## Public challenge / reconsideration proof
+- Original inconclusive case `EVS-APOLLO-V33-53368258196A` was challenged (tx `0xe3b848a2b64ae6d679122e056d9261b6dc84a233244f4c54e364a2b01824a1da`).
+- **Reconsideration transaction:** `0xe34e4fad4c520683d33d729b202a356f77ca0b3ae379b164fecfb18116763c07` — FINALIZED/SUCCESS, round-two PRELIMINARY/INCONCLUSIVE; source drift detected, fail-closed.
+- New challenge deadline 2026-10-19T07:11:36.393551Z; second finalization is not yet due.
+- Reconsideration proof: `deployments/STUDIONET_V3_3_RECONSIDERATION.json`.
 
 ## App
 - GitHub: https://github.com/GIFTEDLOV/eventsure
@@ -37,7 +45,7 @@ EventSure is a reusable GenLayer Intelligent Contract that freezes distinct auth
 - Separate landing page and /app experience; /api/v3/state and /api/v3/source are read-only views of chain state and source code.
 
 ## Outstanding release gates
-A positive PRELIMINARY/VERIFIED case was recorded with dated NASA and Smithsonian sources; it is not final until the challenge period passes. Broader independent security review and third-party-wallet E2E also remain outstanding. Pull request #1 must pass protected main approval. Authenticated GenLayer Portal submission has **not** occurred.
+The positive case is now FINALIZED/VERIFIED. The separate challenged case awaits its second review period's expiration on October 19. Broader independent security review and third-party-wallet E2E also remain outstanding. Pull request #1 must pass protected main approval. Authenticated GenLayer Portal submission has **not** occurred.
 
 ## Source trust limits
 Publisher independence is not proven solely by distinct domains. Historical date proof, mutable pages, excerpt truncation, prompt injection, and Sybil-saturated public challenges remain material risks. An AI consensus decision is not objective ground truth. No escrow, payout or mainnet deployment is claimed.
