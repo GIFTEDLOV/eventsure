@@ -1,0 +1,21 @@
+{
+  "network": "GenLayer Studionet",
+  "chain_id": 61999,
+  "contract": "0x33d84fF024161DDCaDa0412Dc1D52dbDb1f149b0",
+  "contract_source_sha256": "63871815cd3a537dae86defe0f434aa5a08a551dce97a91ef8a76e71c0100abd",
+  "case_id": "EVS-APOLLO-POS-V33-E453D2D5E670",
+  "transaction": "0xb51ab16cfb9a3ec07618253e1283d70ebc26ffbf78539e85a9eb6af6423e982d",
+  "execution_result": "SUCCESS",
+  "status": "FINALIZED",
+  "validator_votes": {
+    "agree": 5,
+    "disagree": 0
+  },
+  "case_state": "FINALIZED",
+  "decision": "VERIFIED",
+  "challenge_count": 0,
+  "challenge_deadline": "2026-10-18T06:54:59.448570+00:00",
+  "finalized_at": "2026-10-18T07:11:38.884398Z",
+  "github_actions": "https://github.com/GIFTEDLOV/eventsure/actions/runs/39106712227",
+  "interpretation": "Final on-chain verdict under frozen NASA and Smithsonian evidence criteria, not a proof of external truth"
+}
