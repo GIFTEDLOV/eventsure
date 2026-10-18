@@ -1,0 +1,1 @@
+Second read-only inspection of the SDK's actual finalized consensus receipt and all execution/result fields for EventSure V3.2 resolve transaction 0x14d07568dfa27df65562721b7cf841dcf53f2e74992ce28ede2aff17dff9479e. The first diagnostic confirmed `gen_getTransactionReceipt` and `gen_dbg_traceTransaction` are not exposed by the stable Studionet RPC.

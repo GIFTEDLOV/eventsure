@@ -1,0 +1,44 @@
+{
+  "network": "GenLayer Studionet",
+  "chain_id": 61999,
+  "address": "0x33d84fF024161DDCaDa0412Dc1D52dbDb1f149b0",
+  "source_sha256": "63871815cd3a537dae86defe0f434aa5a08a551dce97a91ef8a76e71c0100abd",
+  "case_id": "EVS-APOLLO-POS-V33-E453D2D5E670",
+  "state": "PRELIMINARY",
+  "decision": "VERIFIED",
+  "source_urls": [
+    "https://www.nasa.gov/centers-and-facilities/kennedy/50-years-ago-apollo-astronauts-land-take-first-steps-on-moon/",
+    "https://airandspace.si.edu/explore/stories/apollo-missions/apollo-11-moon-landing/apollo-11-timeline"
+  ],
+  "assessment": {
+    "attestations_consistent": true,
+    "independent_sources": 2,
+    "supported": true,
+    "time_supported": true,
+    "context_hash": "588e04824b6f3a5f3460d69233e76e604d9e65e94a89622fdd9a6c4ef14409d5",
+    "source_digests": [
+      "0d18f7b3ac7fe59df6a898d1c19f8737df600da7d4271c15fac21a0c1b36647d",
+      "185142488430acf93e8f6d48b8e079da29cc598e0e5d262b21522a5a57961cf0"
+    ],
+    "evaluated_at": "2026-10-17T06:54:59.448570Z"
+  },
+  "transactions": {
+    "create": {
+      "hash": "0x60277b68d7ceb22f4c4d03d2749f1ffa5cf9eddfa57e5b1ddca08ca400d8c723",
+      "finalized": true,
+      "execution_result": "SUCCESS"
+    },
+    "freeze": {
+      "hash": "0x73b07c22541ae8382368ac672ce5c6201b10cd9a4dfe819243e4aae0411230e9",
+      "finalized": true,
+      "execution_result": "SUCCESS"
+    },
+    "resolve": {
+      "hash": "0xe4aa025673ebc30c22a9771da92ebab5c29c7ca4b6ce7b700ed45ece8682da53",
+      "finalized": true,
+      "execution_result": "SUCCESS"
+    }
+  },
+  "run": "https://github.com/GIFTEDLOV/eventsure/actions/runs/39011356807",
+  "warning": "PRELIMINARY, pending 24-hour challenge period; validates positive case under current frozen criteria, not objective historical truth"
+}

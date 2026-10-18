@@ -1,0 +1,64 @@
+name: EventSure Browser Smoke
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - release/eventsure-v3.1
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  desktop-mobile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run build
+      - name: Start Next.js on loopback
+        run: |
+          npm run start -- -p 3001 > /tmp/eventsure-next.log 2>&1 &
+          echo $! > /tmp/eventsure-next.pid
+          for i in $(seq 1 45); do
+            curl -fsS http://127.0.0.1:3001/ -o /tmp/eventsure-home.html && break
+            sleep 2
+          done
+          curl -fS http://127.0.0.1:3001/ -o /tmp/eventsure-home.html
+          curl -fS http://127.0.0.1:3001/app -o /tmp/eventsure-console.html
+          grep -q 'eventsure' /tmp/eventsure-home.html
+          grep -Eiq 'wallet|registry|overview' /tmp/eventsure-console.html
+      - name: Install isolated Playwright CLI and browser
+        run: |
+          npm install --no-save --no-package-lock playwright@1.55.1
+          npx playwright install --with-deps chromium
+      - name: Test EIP-1193 wallet behavior in actual Chromium (simulated wallet, no signatures)
+        run: node scripts/wallet-browser-e2e.mjs
+      - name: Render real Chromium screenshots (desktop and mobile)
+        run: |
+          mkdir -p ../artifacts/browser
+          npx playwright screenshot --browser chromium --full-page --viewport-size "1440,900" --wait-for-timeout 2000 http://127.0.0.1:3001/ ../artifacts/browser/landing-desktop.png
+          npx playwright screenshot --browser chromium --full-page --viewport-size "1440,900" --wait-for-timeout 2000 http://127.0.0.1:3001/app ../artifacts/browser/console-desktop.png
+          npx playwright screenshot --browser chromium --full-page --viewport-size "390,844" --wait-for-timeout 2000 http://127.0.0.1:3001/ ../artifacts/browser/landing-mobile.png
+          npx playwright screenshot --browser chromium --full-page --viewport-size "390,844" --wait-for-timeout 2000 http://127.0.0.1:3001/app ../artifacts/browser/console-mobile.png
+          test -s ../artifacts/browser/landing-desktop.png
+          test -s ../artifacts/browser/console-desktop.png
+          test -s ../artifacts/browser/landing-mobile.png
+          test -s ../artifacts/browser/console-mobile.png
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eventsure-browser-screenshots
+          path: artifacts/browser/
+          if-no-files-found: warn
+      - name: Diagnostics on failure
+        if: failure()
+        run: cat /tmp/eventsure-next.log || true

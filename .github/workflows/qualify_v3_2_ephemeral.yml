@@ -1,0 +1,52 @@
+name: EventSure V3.2 Public-World Consensus Qualification
+on:
+  push:
+    branches:
+      - release/eventsure-v3.1
+permissions:
+  contents: read
+concurrency:
+  group: eventsure-v32-one-shot-qualification
+  cancel-in-progress: false
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    name: V3.2 live-qualification syntax and manifest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - run: node --check scripts/qualify_v3_2_ephemeral.mjs
+      - name: Exact deployed source hash
+        run: |
+          echo '9cc30efa9d1107afc30eb1e94d3d6b8cd0671f57f810c17d3801d6dba688b02f  contracts/EventSureV3_2.py' | sha256sum --check
+  qualify:
+    needs: preflight
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[AUTO_QUALIFY_V32]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    name: Execute real GenLayer semantic consensus — ONE ATTEMPT
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - name: Create, freeze, wait, and resolve with validator agreement
+        env:
+          EVENTSURE_EPHEMERAL_QUALIFY: AUTHORIZED_STUDIONET_ONCE
+        run: node scripts/qualify_v3_2_ephemeral.mjs
+      - name: Preserve transaction journal for reconciliation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eventsure-v32-live-qualification
+          path: artifacts/v3_2_qualification/
+          if-no-files-found: warn
+          retention-days: 90

@@ -1,0 +1,23 @@
+{
+  "address": "0x112c9B26daf6168c44e325231061c1c9Db0dad01",
+  "id": "EVS-WEB-20261016-QUAL",
+  "deadline": "2026-10-16T14:15:26.016Z",
+  "transactions": {
+    "create": {
+      "attempted": "2026-10-16T14:10:26.016Z",
+      "hash": "0x0a7834b190e6349820fe9a2439094165c293200f35dcd272641ba555c4623590",
+      "finalized": true,
+      "result": "SUCCESS"
+    },
+    "freeze": {
+      "attempted": "2026-10-16T14:11:04.002Z",
+      "hash": "0x65d205cdb996f451d47026b47e187d1aa1bff7f42284ba8193ae794699f8027f",
+      "finalized": true,
+      "result": "SUCCESS"
+    },
+    "resolve": {
+      "attempted": "2026-10-16T14:22:09.335Z",
+      "hash": "0x215f14ae1267af51f02318ab2b5c54345957239b2d898e131b290777f2bf20c6"
+    }
+  }
+}

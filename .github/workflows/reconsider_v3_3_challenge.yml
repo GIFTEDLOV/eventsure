@@ -1,0 +1,45 @@
+name: EventSure V3.3 Public Reconsideration
+on:
+  push:
+    branches:
+      - release/eventsure-v3.1
+permissions:
+  contents: read
+concurrency:
+  group: eventsure-v33-reconsider-once
+  cancel-in-progress: false
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - run: node --check scripts/reconsider_v3_3_challenge.mjs
+  reconsider:
+    needs: preflight
+    if: ${{ contains(github.event.head_commit.message, '[AUTO_RECONSIDER_V33]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - name: Reconsider only after original challenge window closes
+        env:
+          EVENTSURE_RECONSIDER_AUTH: AUTHORIZED_STUDIONET_ONCE
+        run: node scripts/reconsider_v3_3_challenge.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eventsure-v33-reconsideration-proof
+          path: artifacts/v3_3_reconsider/
+          if-no-files-found: warn

@@ -1,0 +1,1 @@
+Read-only diagnostic of the finalized V3.2 resolution transaction 0x14d07568dfa27df65562721b7cf841dcf53f2e74992ce28ede2aff17dff9479e. The case remains FROZEN and the original qualification failed. This job reads GenLayer's actual consensus execution receipt and GenVM trace; it does not sign or rebroadcast a transaction.

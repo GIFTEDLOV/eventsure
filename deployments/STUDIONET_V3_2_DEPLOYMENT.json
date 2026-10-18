@@ -1,0 +1,17 @@
+{
+  "network": "Studionet",
+  "chain_id": 61999,
+  "source_path": "contracts/EventSureV3_2.py",
+  "source_sha256": "9cc30efa9d1107afc30eb1e94d3d6b8cd0671f57f810c17d3801d6dba688b02f",
+  "tx": "0x9ec31ddb100be028720809f9ead6f8e6e8ddaa5a9fe4bf6f4069414ef141a6e7",
+  "address": "0x1e373772BfbCB70d63D7274b36B17e763a84210e",
+  "signer": "0x9732BD43b3f8255cd0CDF377De6901D38d952F16",
+  "execution_result": "SUCCESS",
+  "status": "FINALIZED",
+  "source_parity": true,
+  "method_count": 14,
+  "verified_at": "2026-10-17T00:41:29.703Z",
+  "signer_mode": "ephemeral",
+  "github_action_run": "https://github.com/GIFTEDLOV/eventsure/actions/runs/38987414077",
+  "artifact": "https://github.com/GIFTEDLOV/eventsure/actions/runs/38987414077/artifacts/12083423595"
+}

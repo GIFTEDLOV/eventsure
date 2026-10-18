@@ -1,52 +1,75 @@
-# EventSure v2 — Intelligent Attestation Protocol
+# EventSure
 
-**Production:** https://eventsure-studionet.vercel.app
-**Contract:** https://explorer-studio.genlayer.com/address/0x5386AbB113Fb21868982a0d382E6abA6244DE617
+**A reusable public-evidence verification Intelligent Contract on GenLayer, with a production landing page and wallet-connected application.**
 
-EventSure allows any account to register a milestone, freeze its conditions, and designate an attestor who can commit timestamped immutable evidence. An independent GenLayer validator set evaluates the attestor's claim against frozen rules. A positive verdict **does not independently prove that an off-chain event occurred**.
+[Live app](https://eventsure-studionet.vercel.app) · [Interactive console](https://eventsure-studionet.vercel.app/app) · [GenLayer contract](https://explorer-studio.genlayer.com/address/0x33d84fF024161DDCaDa0412Dc1D52dbDb1f149b0) · [Developer integration](docs/INTEGRATION_V3_3.md) · [Project Track dossier](docs/GENLAYER_PORTAL_SUBMISSION_V3_3.md)
 
-## Frozen release
+## The problem
 
-- Network: Studionet, chain 61999; RPC https://studio.genlayer.com/api
-- Deployed contract: 0x5386AbB113Fb21868982a0d382E6abA6244DE617
-- SHA-256: 1840b0ff3cbb5b243052c5e52d1dda871f52570968eb3dd065351733f99a5c14
-- ABI: 10 public methods (4 writes, 6 reads)
-- GenVM: v0.6.0-rc6, pinned py-genlayer digest 1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6
-- Frontend SDK: genlayer-js 1.1.8
-- Final canonical evidence: deployments/STUDIONET_V2_PROOF.json
+Public launches, funding milestones, governance commitments and documented deliverables often depend on one party claiming “done.” Ordinary smart contracts cannot read public web evidence or evaluate ambiguous natural-language criteria. EventSure provides one configurable Intelligent Contract for many independent cases without redeploying per use case.
 
-## Workflow
+## What EventSure does
 
-1. Connect a compatible EIP-1193 wallet to Studionet.
-2. Create a milestone with a unique identifier, title, immutable requirement and rule, deadline, and attestor.
-3. The event creator freezes the conditions before the deadline.
-4. The attestor commits one evidence record, signed on-chain before expiry.
-5. Any signer can request consensus resolution after evidence is recorded.
-6. Inspect the final verdict, original evidence SHA-256, and append-only audit.
+1. **Create:** Choose an ID, exact question, dated deadline, immutable evidence rule, two or three public HTTPS documents and optional authorized attestors.
+2. **Freeze:** The creator commits the rule and URLs on-chain before the deadline.
+3. **Resolve:** After the deadline, GenLayer validators independently retrieve evidence, run semantic adjudication, and compare their **material outcome** under the same frozen policy.
+4. **Challenge:** Up to eight distinct addresses may object in the 24-hour review window, optionally submitting a public reference. This is not Sybil-resistant.
+5. **Reconsider / finalize:** After the challenge window, anyone can request reconsideration of challenged cases, or finalize an eligible preliminary result. Finalized transaction status and case finality are distinct.
 
-Browser-wallet write paths are implemented, but end-to-end signing by every third-party wallet is **not** independently qualified. Canonical blockchain qualification used a test-only GenLayerJS signer.
+The output is **VERIFIED** or **INCONCLUSIVE under the frozen evidence policy**—not objective real-world truth.
 
-## Reproduce
+## V3.3 verified deployment
 
-Node.js 24 and Python 3.12+.
+| Field | Value |
+| --- | --- |
+| GenLayer network | Studionet — chain `61999` |
+| Contract | `0x33d84fF024161DDCaDa0412Dc1D52dbDb1f149b0` |
+| Source | [`contracts/EventSureV3_3.py`](contracts/EventSureV3_3.py) |
+| Source SHA-256 | `63871815cd3a537dae86defe0f434aa5a08a551dce97a91ef8a76e71c0100abd` |
+| Deployment | [`0xb799b06e63d934315e2a534be821fad6ae1dc7d62e9d4b129f916282f7927188`](https://explorer-studio.genlayer.com/tx/0xb799b06e63d934315e2a534be821fad6ae1dc7d62e9d4b129f916282f7927188) — FINALIZED / SUCCESS |
+| ABI | 14 public methods: 7 writes, 7 reads |
+| Source parity | Exact byte equality between repository and on-chain GenLayer contract |
+| RPC | `https://studio.genlayer.com/api` |
+| Release branch | [`release/eventsure-v3.1`](https://github.com/GIFTEDLOV/eventsure/pull/1); **protected main still awaits independent review** |
 
-- Tests: `npm test` (35 Python contract/security tests and 17 frontend tests)
-- Frontend: `npm --prefix web ci`, `npm --prefix web audit --audit-level=high`, `npm --prefix web run build`
-- GenVM (PowerShell): `$env:GENVM_VERSION = "v0.6.0-rc6"`, then `genvm-lint check contracts/EventSureV2.py`
-- Manifest and secret checks: `node scripts/check_manifest.mjs` and `python scripts/secret_audit.py`
-- Read-only chain verification: `npm run verify`
+## Live cases — not mocked verdicts
 
-For a full local release check, use [docs/TESTING.md](docs/TESTING.md). Network, ABI, finalized transaction, execution, and canonical event provenance are recorded in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+| Case | Result | Reproducible evidence |
+| --- | --- | --- |
+| `EVS-APOLLO-POS-V33-E453D2D5E670` | **FINALIZED / VERIFIED** (post-challenge window, 5 validator agreements) | [Final verdict proof](deployments/STUDIONET_V3_3_FINAL_VERDICT.json) · [resolve transaction](https://explorer-studio.genlayer.com/tx/0xe4aa025673ebc30c22a9771da92ebab5c29c7ca4b6ce7b700ed45ece8682da53) |
+| `EVS-APOLLO-V33-53368258196A` | **PRELIMINARY / INCONCLUSIVE, round two** after a real public challenge/reconsideration | [Reconsideration proof](deployments/STUDIONET_V3_3_RECONSIDERATION.json) · [resolve transaction](https://explorer-studio.genlayer.com/tx/0x35486954ec65ba41f2d2bb9ced83102af92b1fe9717e1683d4cd2b7ce2f60469) |
 
-The GitHub Actions workflow performs Python tests and compilation, manifest parity, secret scanning across reachable Git history, root and frontend dependency audits, frontend tests and production build, GenVM lint/schema/validation and SDK-aware Pyright typechecking, and read-only Studionet verification.
+The case lifecycle also includes [five-vote successful finalization](https://explorer-studio.genlayer.com/tx/0xb51ab16cfb9a3ec07618253e1283d70ebc26ffbf78539e85a9eb6af6423e982d) of the positive case and a [successful public challenge reconsideration](https://explorer-studio.genlayer.com/tx/0xe34e4fad4c520683d33d729b202a356f77ca0b3ae379b164fecfb18116763c07) of the inconclusive case. The latter has a second review window through October 19, 2026. NASA and Smithsonian evidence yielded a positive result only for the more specific dated-source case. The earlier broad-source case remained conservative rather than inventing a verified outcome.
 
-## Provenance and limitations
+## Technical architecture
 
-This is the **cloud-reconstructed version**. It is not byte-identical to the original Windows EventSure V1 source (historical SHA-256 a53f7db43dd44b894a5e48b720ddf748e369c0fc3bc58d3b3a66f8dde8f7ea75). V1 source and deployment history are not used as V2 release provenance.
+- **GenLayer Intelligent Contract:** frozen case policy and deadlines, 500 KB maximum web response, deterministic compact excerpt selection, bounded structured semantic votes, custom material-equivalence validator, challenge/reconsideration and append-only audit.
+- **Next.js app:** distinct editorial landing page and signed-wallet console (case registry, case creation, source URLs, transaction status, reviewer challenges, developer integration).
+- **GitHub/Vercel:** protected PR workflow, GenVM verification, Python adversarial tests, frontend tests, desktop/mobile Chromium runs with **simulated** EIP-1193 wallet scenarios, and production build/source hash verification.
 
-The first exploratory V2 qualification mistakenly attested nine public ABI methods; the deployed V2 ABI has ten. That historical attempt remains on-chain but is excluded from canonical qualification. The final V2 case correctly identifies ten methods, verified against the chain before submitting evidence.
+**Contract interfaces:** `create_case`, `freeze_case`, `attest`, `resolve_case`, `challenge_case`, `reconsider_case`, `finalize_case`, `contract_info`, `get_case`, `get_case_ids`, `get_attestation`, `get_challenge`, `get_audit_count`, `get_audit`.
 
-The production interface keeps that exploratory record visible as historical chain data and labels it as excluded. The canonical release case is `EVS-HARDENED-V2-FINAL-20261016`.
+## Run verification locally
 
-No frontend wallet secret or test signer private key belongs in the repository. See [docs/SECURITY.md](docs/SECURITY.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/ATTRIBUTION.md](docs/ATTRIBUTION.md), and [docs/SUBMISSION.md](docs/SUBMISSION.md).
+```sh
+npm ci
+python -m unittest discover -s tests -v
+npm --prefix web ci
+npm --prefix web test
+npm --prefix web run build
+node scripts/verify_v3_3.mjs
+```
 
+Browser tests are run in the `EventSure Browser Smoke` GitHub Actions workflow (actual Chromium at desktop and mobile widths). The mocked provider tests are not substitutes for a genuine user-wallet signed browser write.
+
+## Limitations and release gates
+
+**Source independence** is based on host grouping, not cryptographic publisher ownership. The retrieved webpages and recorded excerpt hashes do not prove historic first-publication time; sources can redirect, drift, mislead or contain prompt injection. The eight public challenge slots can be captured by multiple wallets. No third-party security audit, automatic escrow, production-network certification or immutable archival timestamping has been demonstrated.
+
+Read [V3.3 security and quality review](docs/SECURITY_AND_QUALITY_REVIEW_V3_3.md), [Developer guide](docs/INTEGRATION_V3_3.md) and [GenLayer Portal submission package](docs/GENLAYER_PORTAL_SUBMISSION_V3_3.md). An independent GitHub approval and authenticated Portal submission are still required. Do not infer steward endorsement or a submitted Portal entry from this README.
+
+## Prior versions
+
+V2 [`v2.0.2`](https://github.com/GIFTEDLOV/eventsure/releases/tag/v2.0.2) was attestor-backed and not independently evidence-verifying. V3.1 was the earlier live public-web version; V3.2 deployed but failed a live consensus resolution because validators disagreed with byte-exact comparison. V3.3 preserved previous provenance and fixed material-outcome comparison, then demonstrated both real verdict paths.
+
+Built on the GenLayer Intelligent Contract model; inspired in part by [GenLayer Intelligent Oracle](https://github.com/genlayerlabs/intelligent-oracle). Independent research software, not endorsed or certified by the GenLayer Foundation.
