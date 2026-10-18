@@ -1,0 +1,18 @@
+{
+  "network": "GenLayer Studionet",
+  "chain_id": 61999,
+  "contract": "0x33d84fF024161DDCaDa0412Dc1D52dbDb1f149b0",
+  "contract_source_sha256": "63871815cd3a537dae86defe0f434aa5a08a551dce97a91ef8a76e71c0100abd",
+  "case_id": "EVS-APOLLO-V33-53368258196A",
+  "original_challenge_tx": "0xe3b848a2b64ae6d679122e056d9261b6dc84a233244f4c54e364a2b01824a1da",
+  "reconsideration_tx": "0xe34e4fad4c520683d33d729b202a356f77ca0b3ae379b164fecfb18116763c07",
+  "status": "FINALIZED",
+  "execution_result": "SUCCESS",
+  "post_case_state": "PRELIMINARY",
+  "round": 2,
+  "decision": "INCONCLUSIVE",
+  "source_drift": true,
+  "new_challenge_deadline": "2026-10-19T07:11:36.393551+00:00",
+  "github_actions": "https://github.com/GIFTEDLOV/eventsure/actions/runs/39106712220",
+  "interpretation": "Real public challenge and reconsideration path passed; case must wait for new review window before finalization"
+}
