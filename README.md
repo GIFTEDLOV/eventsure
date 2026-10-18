@@ -36,10 +36,10 @@ The output is **VERIFIED** or **INCONCLUSIVE under the frozen evidence policy**�
 
 | Case | Result | Reproducible evidence |
 | --- | --- | --- |
-| `EVS-APOLLO-POS-V33-E453D2D5E670` | **PRELIMINARY / VERIFIED** (during 24-hour review window) | [On-chain proof](deployments/STUDIONET_V3_3_POSITIVE_QUALIFICATION.json) · [resolve transaction](https://explorer-studio.genlayer.com/tx/0xe4aa025673ebc30c22a9771da92ebab5c29c7ca4b6ce7b700ed45ece8682da53) |
-| `EVS-APOLLO-V33-53368258196A` | **PRELIMINARY / INCONCLUSIVE** at original resolution; subsequent challenge/reconsideration status must be read from chain | [On-chain proof](deployments/STUDIONET_V3_3_QUALIFICATION.json) · [resolve transaction](https://explorer-studio.genlayer.com/tx/0x35486954ec65ba41f2d2bb9ced83102af92b1fe9717e1683d4cd2b7ce2f60469) |
+| `EVS-APOLLO-POS-V33-E453D2D5E670` | **FINALIZED / VERIFIED** (post-challenge window, 5 validator agreements) | [Final verdict proof](deployments/STUDIONET_V3_3_FINAL_VERDICT.json) · [resolve transaction](https://explorer-studio.genlayer.com/tx/0xe4aa025673ebc30c22a9771da92ebab5c29c7ca4b6ce7b700ed45ece8682da53) |
+| `EVS-APOLLO-V33-53368258196A` | **PRELIMINARY / INCONCLUSIVE, round two** after a real public challenge/reconsideration | [Reconsideration proof](deployments/STUDIONET_V3_3_RECONSIDERATION.json) · [resolve transaction](https://explorer-studio.genlayer.com/tx/0x35486954ec65ba41f2d2bb9ced83102af92b1fe9717e1683d4cd2b7ce2f60469) |
 
-All six original case lifecycle transactions were FINALIZED and executed successfully. NASA and Smithsonian evidence yielded a positive result only for the more specific dated-source case. The earlier broad-source case remained conservative rather than inventing a verified outcome.
+The case lifecycle also includes [five-vote successful finalization](https://explorer-studio.genlayer.com/tx/0xb51ab16cfb9a3ec07618253e1283d70ebc26ffbf78539e85a9eb6af6423e982d) of the positive case and a [successful public challenge reconsideration](https://explorer-studio.genlayer.com/tx/0xe34e4fad4c520683d33d729b202a356f77ca0b3ae379b164fecfb18116763c07) of the inconclusive case. The latter has a second review window through October 19, 2026. NASA and Smithsonian evidence yielded a positive result only for the more specific dated-source case. The earlier broad-source case remained conservative rather than inventing a verified outcome.
 
 ## Technical architecture
 
