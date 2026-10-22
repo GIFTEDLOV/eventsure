@@ -1,8 +1,10 @@
 # GenLayer Portal submission checklist — EventSure v2
 
-Canonical contract 0x5386AbB113Fb21868982a0d382E6abA6244DE617 on GenLayer Studionet, chain 61999.
+Canonical contract [`0x5386AbB113Fb21868982a0d382E6abA6244DE617`](https://explorer-studio.genlayer.com/address/0x5386AbB113Fb21868982a0d382E6abA6244DE617) on GenLayer Studionet, chain 61999.  
+Active contract source: [`contracts/EventSureV2.py`](../contracts/EventSureV2.py) (SHA-256: `1840b0ff3cbb5b243052c5e52d1dda871f52570968eb3dd065351733f99a5c14`).  
+Trust Model: **Single-Attestor Authenticated Text-Review Workflow** (no automated web crawling, multi-source HTTPS scraping, or public objection appeals are claimed).
 
-Canonical live case EVS-HARDENED-V2-FINAL-20261016; verdict ATTESTATION_SUPPORTED; on-chain technical status OK, stored RESOLVED, audit count 8 (includes excluded exploratory first V2 case). All five canonical deployment/qualification transactions are FINALIZED and listed in ../deployments/STUDIONET_V2_PROOF.json.
+Canonical live case `EVS-HARDENED-V2-FINAL-20261016`; verdict `ATTESTATION_SUPPORTED`; on-chain technical status `OK`, stored `RESOLVED`, audit count 8 (includes excluded exploratory first V2 case). All five canonical deployment/qualification transactions are `FINALIZED` and listed in [../deployments/STUDIONET_V2_PROOF.json](../deployments/STUDIONET_V2_PROOF.json).
 
 Source SHA-256 1840b0ff3cbb5b243052c5e52d1dda871f52570968eb3dd065351733f99a5c14.
 Frontend: https://eventsure-studionet.vercel.app.

@@ -1,9 +1,11 @@
 # EventSure v2 — Intelligent Attestation Protocol
 
-**Production:** https://eventsure-studionet.vercel.app
-**Contract:** https://explorer-studio.genlayer.com/address/0x5386AbB113Fb21868982a0d382E6abA6244DE617
+**Production Application:** https://eventsure-studionet.vercel.app  
+**Canonical Contract (Studionet 61999):** [`0x5386AbB113Fb21868982a0d382E6abA6244DE617`](https://explorer-studio.genlayer.com/address/0x5386AbB113Fb21868982a0d382E6abA6244DE617)  
+**Active Contract Source:** [`contracts/EventSureV2.py`](contracts/EventSureV2.py) (SHA-256: `1840b0ff3cbb5b243052c5e52d1dda871f52570968eb3dd065351733f99a5c14`)
 
-EventSure allows any account to register a milestone, freeze its conditions, and designate an attestor who can commit timestamped immutable evidence. An independent GenLayer validator set evaluates the attestor's claim against frozen rules. A positive verdict **does not independently prove that an off-chain event occurred**.
+> **Protocol Trust Model: Single-Attestor Authenticated Text-Review Workflow**  
+> EventSure implements an attestation-backed milestone adjudication protocol. Any account can register a milestone, freeze its specification, and designate an authorized attestor address. The designated attestor submits timestamped, immutable text evidence before the deadline. GenLayer AI validators independently evaluate whether the submitted documentary evidence satisfies the frozen requirement under strict structured consensus. A positive verdict (`ATTESTATION_SUPPORTED`) confirms validator agreement on the attestor's submitted evidence; it **does not independently verify external off-chain truth**.
 
 ## Frozen release
 
